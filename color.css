@@ -1,0 +1,21 @@
+.description img {
+    height: 16px;
+    margin-right: 4px;
+}
+
+a:hover + .cls1 {
+    stroke: #000;
+}
+
+.content {
+    background-color: #FAFBFC;
+    color: #4a4a4a;
+    text-align: left;
+    border-radius: 2px;
+    margin-top: 24px;
+    padding: 24px 24px;
+}
+
+.content h1 {
+    margin: 0;
+}
