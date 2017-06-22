@@ -1,15 +1,3 @@
-var myColor = {
-    h:44,
-    s:100,
-    v:100
-}
-
-var myColor2 = {
-    h:360,
-    s:53,
-    v:87
-}
-
 function normHSV(color) {
     var h = color.h;
     var s = color.s;

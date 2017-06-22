@@ -1,19 +1,49 @@
-function gridData() {
+var myHue = 20;
+
+var myColor = {
+    h:44,
+    s:100,
+    v:100
+}
+
+var myColor2 = {
+    h:360,
+    s:53,
+    v:87
+}
+
+var white = {
+  h: 0,
+  s: 0,
+  v: 100,
+}
+
+var black = {
+  h: 0,
+  s: 0,
+  v: 0
+}
+
+var colorDouble = [white,myColor2];
+
+var accessibilityValue = 4.5;
+
+function gridData(hue) {
   var data = new Array();
   var xpos = 0;
   var ypos = 0;
   var columnPos = 0;
   var rowPos = 0;
-  var width = 1;
-  var height = 1;
+  var width = 2;
+  var height = 2;
 
   //iterate over rows
 
   for (var row = 0; row <= 100; row++) {
     data.push( new Array() );
-
     // interate for cells
-    for (var column = 0; column <= 360; column++) {
+    for (var column = 0; column <= 100; column++) {
+
       data[row].push({
         x: xpos,
         y: ypos,
@@ -21,6 +51,8 @@ function gridData() {
         height: height,
         columnPos: columnPos,
         rowPos: rowPos,
+        fill: plotHSV(hue, columnPos, rowPos),
+        isOnBoundary: false
       })
 
       // increment x
@@ -38,15 +70,23 @@ function gridData() {
     rowPos += 1;
   }
 
+  for (var column = 0; column <= 100; column++) {
+    for (var row = 0; row <=100; row++) {
+      if (checkColorContrast(hue, column, row)) {
+        data[row][column].isOnBoundary = true;
+        break;
+      }
+    }
+  }
+
   return data;
 }
-
 
 window.onload = function() {
   var svg = d3.select('svg');
 
   var row = svg.selectAll('.row')
-      .data(gridData())
+      .data(gridData(myHue))
     .enter().append('g')
       .attr('class', "row");
 
@@ -57,30 +97,64 @@ window.onload = function() {
     .attr('y', function(d) { return d.y;})
     .attr('width', 0)
     .attr('height', 0)
-    .attr('fill', function(d) {
-      var tempColor = "rgb(" + d.columnPos + "," + d.rowPos + ",255)";
-      return tempColor;});
+    .attr('class', function(d) { return d.isOnBoundary ? "line" : null })
+    .attr('fill', function(d) { return d.fill });
 
   column
     .attr('width', function(d) { return d.width;})
-    .attr('height', function(d) { return d.height;});
+    .attr('height', function(d) { return d.height;})
+    .attr('columnPos', function(d) { return d.columnPos})
+    .attr('rowPos', function(d) { return d.rowPos});
 
-    var colorCounter = 0;
-    d3.select("button").on('click', function() {
-      colorCounter++;
-      if (colorCounter%2 == 0) {
-        column.attr('fill', function(d) {
-        var tempColor = "rgb(" + d.columnPos + "," + d.rowPos + ",255)";
-        return tempColor;});
-      } else {
-        column.attr('fill', function(d) {
-        var tempColor = "rgb(255," + d.columnPos + "," + d.rowPos + ")";
-        return tempColor;});
-      }
+  d3.select('#buttonHue').on('input', function() {
+    update(this.value);
+  });
 
-    });
+  // Inital starting hue
+  update(myHue);
+
+  function update(hue) {
+    d3.select('#buttonHue').attr('value', hue);
+    d3.selectAll('.row')
+        .data(gridData(hue))
+      .selectAll('rect')
+        .data(function(d) { return d;})
+          .attr('class', function(d) { return d.isOnBoundary ? "line" : null })
+          .attr('fill', function(d) { return d.fill });
+  }
 
 }
 
+function plotHSV(hue, x, y) {
+  var tempColorHSV = {
+    h: hue,
+    s: x,
+    v: y,
+  }
 
+  var tempColorRGBnormalized = HSVtoRGB(normHSV(tempColorHSV));
 
+  var tempColorRGB =
+    "rgb(" +
+    Math.round(tempColorRGBnormalized.r*255)
+    + "," +
+    Math.round(tempColorRGBnormalized.g*255)
+    + "," +
+    Math.round(tempColorRGBnormalized.b*255)
+     + ")";
+
+  return tempColorRGB;
+}
+
+function checkColorContrast(hue, x, y) {
+  var tempColorHSV = {
+    h: hue,
+    s: x,
+    v: y,
+  }
+  var contrast = getColorContrastHSV(tempColorHSV, white);
+
+  return (contrast <= 4.5);
+}
+
+// When the hue input changes update the graphic
