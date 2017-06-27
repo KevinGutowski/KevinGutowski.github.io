@@ -20,7 +20,7 @@ a:hover + .cls1 {
     margin: 0;
 }
 
-svg {
+#colorSpace {
     transform: scaleY(-1);
 }
 

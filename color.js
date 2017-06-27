@@ -1,16 +1,18 @@
 function normHSV(color) {
-    var h = color.h;
-    var s = color.s;
-    var v = color.v;
-
-    h = h / 360.0;
-    s = s / 100.0;
-    v = v / 100.0;
-
     color = {
-        h: h,
-        s: s,
-        v: v
+        h: color.h / 360.0,
+        s: color.s / 100.0,
+        v: color.v / 100.0,
+    }
+
+    return color
+}
+
+function normRGB(color) {
+    color = {
+        r: color.r / 255.0,
+        g: color.g / 255.0,
+        b: color.b / 255.0
     }
 
     return color
@@ -44,6 +46,39 @@ function HSVtoRGB(color) {
     }
 
     return color
+}
+
+function RGBtoHSV(color) {
+    var r = color.r;
+    var g = color.g;
+    var b = color.b;
+
+    var max = Math.max(r,g,b);
+    var min = Math.min(r,g,b);
+    var h, s, v = max;
+    var d = max - min;
+    s = max == 0 ? 0 : d / max;
+
+    if (max == min) {
+        h = 0;
+    } else {
+        switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+        }
+
+        h /= 6
+    }
+
+    var tempHSVColor = {
+        h: h,
+        s: s,
+        v: v
+    }
+
+    return tempHSVColor;
+
 }
 
 function getColorContrast(color1, color2) {
@@ -143,4 +178,15 @@ function getColorContrastHSV(color1, color2) {
 
     //get contrast of RGB colors
     return getColorContrast(color1, color2)
+}
+
+function hexToRgb(hex){
+    hex = hex.replace('#','');
+    var myTempRGBColor = {
+        r: parseInt(hex.substring(0,2), 16),
+        g: parseInt(hex.substring(2,4), 16),
+        b: parseInt(hex.substring(4,6), 16)
+    }
+
+    return myTempRGBColor
 }

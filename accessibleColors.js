@@ -7,9 +7,9 @@ var myColor = {
 }
 
 var myColor2 = {
-    h:360,
-    s:53,
-    v:87
+    r:200,
+    g:53,
+    b:87
 }
 
 var white = {
@@ -82,48 +82,48 @@ function gridData(hue) {
   return data;
 }
 
-window.onload = function() {
-  var svg = d3.select('svg');
+// window.onload = function() {
+//   var svg = d3.select('.colorSpace');
 
-  var row = svg.selectAll('.row')
-      .data(gridData(myHue))
-    .enter().append('g')
-      .attr('class', "row");
+//   var row = svg.selectAll('.row')
+//       .data(gridData(myHue))
+//     .enter().append('g')
+//       .attr('class', "row");
 
-  var column = row.selectAll('.square')
-    .data(function(d) { return d;})
-  .enter().append('rect')
-    .attr('x', function(d) { return d.x;})
-    .attr('y', function(d) { return d.y;})
-    .attr('width', 0)
-    .attr('height', 0)
-    .attr('class', function(d) { return d.isOnBoundary ? "line" : null })
-    .attr('fill', function(d) { return d.fill });
+//   var column = row.selectAll('.square')
+//     .data(function(d) { return d;})
+//   .enter().append('rect')
+//     .attr('x', function(d) { return d.x;})
+//     .attr('y', function(d) { return d.y;})
+//     .attr('width', 0)
+//     .attr('height', 0)
+//     .attr('class', function(d) { return d.isOnBoundary ? "line" : null })
+//     .attr('fill', function(d) { return d.fill });
 
-  column
-    .attr('width', function(d) { return d.width;})
-    .attr('height', function(d) { return d.height;})
-    .attr('columnPos', function(d) { return d.columnPos})
-    .attr('rowPos', function(d) { return d.rowPos});
+//   column
+//     .attr('width', function(d) { return d.width;})
+//     .attr('height', function(d) { return d.height;})
+//     .attr('columnPos', function(d) { return d.columnPos})
+//     .attr('rowPos', function(d) { return d.rowPos});
 
-  d3.select('#buttonHue').on('input', function() {
-    update(this.value);
-  });
+//   d3.select('#buttonHue').on('input', function() {
+//     update(this.value);
+//   });
 
-  // Inital starting hue
-  update(myHue);
+//   // Inital starting hue
+//   update(myHue);
 
-  function update(hue) {
-    d3.select('#buttonHue').attr('value', hue);
-    d3.selectAll('.row')
-        .data(gridData(hue))
-      .selectAll('rect')
-        .data(function(d) { return d;})
-          .attr('class', function(d) { return d.isOnBoundary ? "line" : null })
-          .attr('fill', function(d) { return d.fill });
-  }
+//   function update(hue) {
+//     d3.select('#buttonHue').attr('value', hue);
+//     d3.selectAll('.row')
+//         .data(gridData(hue))
+//       .selectAll('rect')
+//         .data(function(d) { return d;})
+//           .attr('class', function(d) { return d.isOnBoundary ? "line" : null })
+//           .attr('fill', function(d) { return d.fill });
+//   }
 
-}
+// }
 
 function plotHSV(hue, x, y) {
   var tempColorHSV = {
