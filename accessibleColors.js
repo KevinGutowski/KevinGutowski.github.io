@@ -46,12 +46,13 @@ function gridData(hue) {
 
       data[row].push({
         x: xpos,
-        y: ypos,
+        y: (100*height) - ypos,
         width: width,
         height: height,
         columnPos: columnPos,
         rowPos: rowPos,
         fill: plotHSV(hue, columnPos, rowPos),
+        hsv: "HSB(" + hue + "," + columnPos + "," + rowPos + ")",
         isOnBoundary: false
       })
 
@@ -82,48 +83,73 @@ function gridData(hue) {
   return data;
 }
 
-// window.onload = function() {
-//   var svg = d3.select('.colorSpace');
+function hues() {
+  var data = new Array();
+  var xpos = 0;
+  var ypos = 0;
+  var columnPos = 0;
+  var width = 2;
+  var height = 8;
+  for (var hue = 0; hue <= 360; hue++) {
+    data.push({
+      x: xpos,
+      y: ypos,
+      width: width,
+      height: height,
+      columnPos: columnPos,
+      fill: plotHSV(hue, columnPos, 100),
+    })
 
-//   var row = svg.selectAll('.row')
-//       .data(gridData(myHue))
-//     .enter().append('g')
-//       .attr('class', "row");
+    // increment x
+    xpos += width;
+    //increment column position by 1
+    columnPos += 1;
+  }
 
-//   var column = row.selectAll('.square')
-//     .data(function(d) { return d;})
-//   .enter().append('rect')
-//     .attr('x', function(d) { return d.x;})
-//     .attr('y', function(d) { return d.y;})
-//     .attr('width', 0)
-//     .attr('height', 0)
-//     .attr('class', function(d) { return d.isOnBoundary ? "line" : null })
-//     .attr('fill', function(d) { return d.fill });
+  return data;
+}
 
-//   column
-//     .attr('width', function(d) { return d.width;})
-//     .attr('height', function(d) { return d.height;})
-//     .attr('columnPos', function(d) { return d.columnPos})
-//     .attr('rowPos', function(d) { return d.rowPos});
+function accessibleColors() {
+  var svg = d3.select('#colorSpace');
 
-//   d3.select('#buttonHue').on('input', function() {
-//     update(this.value);
-//   });
+  var row = svg.selectAll('.row')
+      .data(gridData(myHue))
+    .enter().append('g')
+      .attr('class', "row");
 
-//   // Inital starting hue
-//   update(myHue);
+  var column = row.selectAll('.square')
+    .data(function(d) { return d;})
+  .enter().append('rect')
+    .attr('x', function(d) { return d.x;})
+    .attr('y', function(d) { return d.y;})
+    .attr('width', 0)
+    .attr('height', 0)
+    .attr('class', function(d) { return d.isOnBoundary ? "line" : null })
+    .attr('fill', function(d) { return d.fill });
 
-//   function update(hue) {
-//     d3.select('#buttonHue').attr('value', hue);
-//     d3.selectAll('.row')
-//         .data(gridData(hue))
-//       .selectAll('rect')
-//         .data(function(d) { return d;})
-//           .attr('class', function(d) { return d.isOnBoundary ? "line" : null })
-//           .attr('fill', function(d) { return d.fill });
-//   }
+  column
+    .attr('width', function(d) { return d.width;})
+    .attr('height', function(d) { return d.height;})
+    .attr('data-hsv', function(d) { return d.hsv})
 
-// }
+  d3.select('#buttonHue').on('input', function() {
+    update(this.value);
+  });
+
+  // Inital starting hue
+  update(myHue);
+
+  function update(hue) {
+    d3.select('#buttonHue').attr('value', hue);
+    d3.selectAll('.row')
+        .data(gridData(hue))
+      .selectAll('rect')
+        .data(function(d) { return d;})
+          .attr('class', function(d) { return d.isOnBoundary ? "line" : null })
+          .attr('fill', function(d) { return d.fill });
+  }
+
+}
 
 function plotHSV(hue, x, y) {
   var tempColorHSV = {

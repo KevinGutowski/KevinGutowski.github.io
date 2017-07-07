@@ -15,6 +15,7 @@
   <script src="https://d3js.org/d3.v4.js"></script>
   <script type="text/javascript" src="colorCurve.js"></script>
   <script type="text/javascript" src="accessibleColors.js"></script>
+  <script type="text/javascript" src="onWindowLoad.js"></script>
 
 </head>
 
@@ -28,7 +29,10 @@
               <h1>Accessible Color Spaces</h1>
               <p>Content</p>
               <div class="section">
-                <svg width="200" height="200" viewbox="0 0 200 200" id="colorSpace"></svg>
+                <div id="colorPicker">
+                  <svg width="200" height="200" viewbox="0 0 200 200" id="colorSpace"></svg>
+                  <svg width="200" height="16" viewbox="0 0 200 8" id="hueSelection"></svg>
+                </div>
                 <input type="number" name="buttonHue" min="0" max="360" inputmode="numeric" pattern="[0-9]*" id="buttonHue" class="buttonColor">
               <!-- <input type="number" name="buttonSat" min="0" max="100" id="buttonSat" class="buttonColor">
               <input type="number" name="buttonVal" min="0" max="100" id="buttonVal" class="buttonColor"> -->

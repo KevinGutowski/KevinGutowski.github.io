@@ -1,4 +1,4 @@
-var colors = ["ee3322", "feebe9", "f43192", "0f65ef", "6645dd", "ffee00", "fffab6", "f47f16", 'f7ad19', '0dccb0', '68af15', 'e1efd0', 'aaaaaa', 'f4f4f4', '222222']
+var colors = ["f5f7fa", "f0f3f6", 'dfe3e6', "8c9ba5", "152934"]
 var colorObjects = [];
 
 for (var i = 0; i < colors.length; i++) {
@@ -18,7 +18,7 @@ for (var i = 0; i < colors.length; i++) {
     colorObjects.push(color);
 }
 
-window.onload = function() {
+function colorCurve() {
     var svg = d3.select("#colorCurve");
     var enterSelection = svg.selectAll('circle').data(colorObjects).enter()
     enterSelection.append('circle')

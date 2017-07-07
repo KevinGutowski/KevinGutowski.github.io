@@ -20,10 +20,18 @@ a:hover + .cls1 {
     margin: 0;
 }
 
-#colorSpace {
-    transform: scaleY(-1);
-}
-
 .line {
     fill: black;
+}
+
+#colorPicker {
+    display: inline-block;
+}
+
+#colorPicker svg {
+    display: block;
+}
+
+#hueSelection {
+    margin-top: 8px;
 }
