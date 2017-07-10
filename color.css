@@ -32,6 +32,22 @@ a:hover + .cls1 {
     display: block;
 }
 
-#hueSelection {
+#hueSelectorNub {
+    fill: #F2F2F2;
+    stroke-width: 1;
+    stroke: #BDBDBD;
+}
+
+#hueSelector {
     margin-top: 8px;
+    border-radius: 2px;
+}
+
+.buttonAndContrast {
+    display: inline-block;
+}
+
+#backgroundColor {
+    padding: 12px 24px;
+    display: inline-block;
 }

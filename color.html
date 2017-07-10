@@ -31,11 +31,26 @@
               <div class="section">
                 <div id="colorPicker">
                   <svg width="200" height="200" viewbox="0 0 200 200" id="colorSpace"></svg>
-                  <svg width="200" height="16" viewbox="0 0 200 8" id="hueSelection"></svg>
+                  <svg width="200" height="10" viewbox="0 0 200 10" preserveAspectRatio='none' id="hueSelector"></svg>
                 </div>
-                <input type="number" name="buttonHue" min="0" max="360" inputmode="numeric" pattern="[0-9]*" id="buttonHue" class="buttonColor">
-              <!-- <input type="number" name="buttonSat" min="0" max="100" id="buttonSat" class="buttonColor">
-              <input type="number" name="buttonVal" min="0" max="100" id="buttonVal" class="buttonColor"> -->
+                <div id='inputs'>
+                  <div class="formTitle">BUTTON / BG COLOR</div>
+                  <input type="number" name="hueInput" min="0" max="360" inputmode="numeric" pattern="[0-9]*" id="hueSpecial" class="buttonColor">
+                  <input type="number" name="satInput" min="0" max="100" inputmode="numeric" pattern="[0-9]*" id="satInput" class="buttonColor">
+                  <input type="number" name="brightInput" min="0" max="100" inputmode="numeric" pattern="[0-9]*" id="brightInput" class="buttonColor">
+
+                  <div class="formTitle">TEXT COLOR</div>
+                  <input type="number" name="textHueInput" min="0" max="360" inputmode="numeric" pattern="[0-9]*" id="textHueInput" class="buttonColor">
+                  <input type="number" name="textSatInput" min="0" max="100" inputmode="numeric" pattern="[0-9]*" id="textSatInput" class="buttonColor">
+                  <input type="number" name="textBrightInput" min="0" max="100" inputmode="numeric" pattern="[0-9]*" id="textBrightInput" class="buttonColor">
+                </div>
+
+                <div class="buttonAndContrast">
+                  <div id='backgroundColor'>My Button</div>
+                  <div id="contrastValue">Contrast: 2.6:1</div>
+                  <div id="optionalWarning">!WARNING: Below Contrast Requirement</div>
+                </div>
+
               </div>
               <div class="section">
                 <svg width="712" height="500" viewbox="0 0 712 500" id="colorCurve"></svg>
