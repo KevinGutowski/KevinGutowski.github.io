@@ -1,7 +1,7 @@
-var initalColor = {
+var initialColor = {
     h:20,
-    s:88,
-    v:85
+    s:100,
+    v:24
 }
 
 var white = {
@@ -10,10 +10,16 @@ var white = {
   v: 100,
 }
 
-var black = {
+var backgroundColor = {
   h: 0,
   s: 0,
-  v: 0
+  b: 0
+}
+
+var textColor = {
+  h: 0,
+  s: 0,
+  b: 100,
 }
 
 
@@ -25,8 +31,8 @@ function gridData(hue) {
   var ypos = 0;
   var columnPos = 0;
   var rowPos = 0;
-  var width = 2;
-  var height = 2;
+  var width = 1;
+  var height = 1;
 
   //iterate over rows
 
@@ -85,7 +91,7 @@ function hues() {
     data.push({
       x: xpos / 1.8,
       y: ypos,
-      width: width / 1.8,
+      width: width,
       height: height,
       columnPos: columnPos,
       hue: hue,
@@ -101,7 +107,7 @@ function hues() {
   return data;
 }
 
-var hueSelectorNub = [{x:initalColor.h / 1.8}];
+var hueSelectorNub = [{x:initialColor.h / 1.8}];
 
 function accessibleColors() {
 
@@ -109,7 +115,7 @@ function accessibleColors() {
   var svg = d3.select('#colorSpace');
 
   var row = svg.selectAll('.row')
-      .data(gridData(initalColor.h))
+      .data(gridData(initialColor.h))
     .enter().append('g')
       .attr('class', "row");
 
@@ -141,7 +147,7 @@ function accessibleColors() {
       .attr('height', function(d) {return d.height})
       .attr('fill', function(d) {return d.fill})
       .attr('class', '.hue')
-      .on('mousedown', function(d) {return update(d.hue)})
+      .on('mousedown', function(d) {return updateHues(d.hue)})
 
   var selector = svg.selectAll('#hueSelector')
         .data(hueSelectorNub)
@@ -150,7 +156,7 @@ function accessibleColors() {
         .attr('y', '0')
         .attr('width', '5')
         .attr('height', '10')
-        .attr('hue', initalColor.h)
+        .attr('hue', initialColor.h)
         .attr('id', "hueSelectorNub")
         .call(d3.drag()
           .on('start', dragstarted)
@@ -172,23 +178,67 @@ function accessibleColors() {
       hueSelectorNubPosition = draggingX;
     }
     d3.select(this).attr('x', d.x = hueSelectorNubPosition);
-    update(Math.round(hueSelectorNubPosition));
+    updateHues(Math.round(hueSelectorNubPosition));
   }
 
   function dragended(d) {
     d3.select(this).classed('active', false);
   }
 
-  d3.select('#hueSpecial').on('input', function() {
-    update(this.value);
+  d3.select('#hueInput').on('input', function() {
+    updateHues(this.value);
+
   });
 
   // Inital starting hue
-  update(initalColor.h);
-  d3.select('#hueSpecial').attr('value', initalColor.h);
+  updateHues(initialColor.h);
+  updateInputs(initialColor, white);
+  updateContrastWarning(initialColor, white);
+  updateDisplay(initialColor, white);
 
-  function update(hue) {
-    d3.select('#hueSpecial').attr('value', hue);
+  function updateDisplay(currentColor, currentTextColor) {
+
+    var normCurrentColorRGB = HSVtoRGB(normHSV(currentColor));
+    var cCR = Math.round(normCurrentColorRGB.r*255);
+    var cCG = Math.round(normCurrentColorRGB.g*255);
+    var cCB = Math.round(normCurrentColorRGB.b*255);
+
+    var normCurrentTextColorRGB = HSVtoRGB(normHSV(currentTextColor));
+    var cTCR = Math.round(normCurrentTextColorRGB.r*255);
+    var cTCG = Math.round(normCurrentTextColorRGB.g*255);
+    var cTCB = Math.round(normCurrentTextColorRGB.b*255);
+
+    var cCString = 'background-color: rgb(' + cCR + ',' + cCG + ',' + cCB +')'
+    var cTCString = 'color: rgb(' + cTCR + ',' + cTCG + ',' + cTCB +')'
+
+
+    d3.select('#myButton').attr('style', cCString + "; " + cTCString);
+  }
+
+  function updateContrastWarning(currentColor, currentTextColor) {
+    var contrastVal = getColorContrastHSV(currentColor, currentTextColor);
+    var floored = (cr.toString().match(/^-?\d+(?:\.\d{0,1})?/)[0]*1).toFixed(1)
+    d3.select('#contrastValue').text('Contrast: ' + floored + ':1');
+    if (contrastVal >= accessibilityValue) {
+      d3.select('#optionalWarning').attr('style', "display:none");
+    } else {
+      d3.select('#optionalWarning').attr('style', "display:inherit");
+    }
+
+  }
+
+  function updateInputs(backgroundColor, textColor) {
+    d3.select('#hueInput').property('value', backgroundColor.h);
+    d3.select('#satInput').property('value', backgroundColor.s);
+    d3.select('#brightInput').property('value', backgroundColor.v);
+
+    d3.select('#textHueInput').property('value', textColor.h);
+    d3.select('#textSatInput').property('value', textColor.s);
+    d3.select('#textBrightInput').property('value', textColor.v);
+  }
+
+  function updateHues(hue) {
+    d3.select('#hueInput').property('value', hue);
     d3.select('#hueSelectorNub').attr('x', hue / 1.8).attr('hue', hue);
     d3.selectAll('.row')
         .data(gridData(hue))
@@ -230,7 +280,7 @@ function checkColorContrast(hue, x, y) {
   }
   var contrast = getColorContrastHSV(tempColorHSV, white);
 
-  return (contrast <= 4.5);
+  return (contrast <= accessibilityValue);
 }
 
 // When the hue input changes update the graphic
