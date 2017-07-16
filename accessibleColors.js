@@ -24,6 +24,7 @@ var textColor = {
 
 
 var accessibilityValue = 4.5;
+var accessibilityPath;
 
 function gridData(hue) {
   var data = new Array();
@@ -31,8 +32,8 @@ function gridData(hue) {
   var ypos = 0;
   var columnPos = 0;
   var rowPos = 0;
-  var width = 1;
-  var height = 1;
+  var width = 2;
+  var height = 2;
 
   //iterate over rows
 
@@ -50,7 +51,6 @@ function gridData(hue) {
         rowPos: rowPos,
         fill: plotHSV(hue, columnPos, rowPos),
         hsv: "HSB(" + hue + "," + columnPos + "," + rowPos + ")",
-        isOnBoundary: false
       })
 
       // increment x
@@ -68,10 +68,16 @@ function gridData(hue) {
     rowPos += 1;
   }
 
+  //Reset Path
+  accessibilityPath = "M";
+
+  //Build Accessibility Path
   for (var column = 0; column <= 100; column++) {
     for (var row = 0; row <=100; row++) {
       if (checkColorContrast(hue, column, row)) {
-        data[row][column].isOnBoundary = true;
+        var scaledRow = (100 - row) * height;
+        var scaledColumn = column*width;
+        accessibilityPath = accessibilityPath + " " + scaledColumn + " " + scaledRow;
         break;
       }
     }
@@ -126,7 +132,6 @@ function accessibleColors() {
     .attr('y', function(d) { return d.y;})
     .attr('width', 0)
     .attr('height', 0)
-    .attr('class', function(d) { return d.isOnBoundary ? "line" : null })
     .attr('fill', function(d) { return d.fill });
 
   column
@@ -134,6 +139,13 @@ function accessibleColors() {
     .attr('height', function(d) { return d.height;})
     .attr('data-hsv', function(d) { return d.hsv})
 
+  // Draw Accessible Curve
+  svg.append('path')
+    .attr('fill', 'none')
+    .attr('stroke', 'black')
+    .attr('class', "accessibilityPath")
+    .attr('d', accessibilityPath)
+    .attr('stroke-width', "2");
 
   // Draw Hue Selector
   var svg = d3.select('#hueSelector');
@@ -208,8 +220,8 @@ function accessibleColors() {
     var cTCG = Math.round(normCurrentTextColorRGB.g*255);
     var cTCB = Math.round(normCurrentTextColorRGB.b*255);
 
-    var cCString = 'background-color: rgb(' + cCR + ',' + cCG + ',' + cCB +')'
-    var cTCString = 'color: rgb(' + cTCR + ',' + cTCG + ',' + cTCB +')'
+    var cCString = 'background-color: rgb(' + cCR + ',' + cCG + ',' + cCB +')';
+    var cTCString = 'color: rgb(' + cTCR + ',' + cTCG + ',' + cTCB +')';
 
 
     d3.select('#myButton').attr('style', cCString + "; " + cTCString);
@@ -244,8 +256,9 @@ function accessibleColors() {
         .data(gridData(hue))
       .selectAll('rect')
         .data(function(d) { return d;})
-          .attr('class', function(d) { return d.isOnBoundary ? "line" : null })
           .attr('fill', function(d) { return d.fill });
+    d3.select('.accessibilityPath').attr('d', accessibilityPath);
+
   }
 
 
