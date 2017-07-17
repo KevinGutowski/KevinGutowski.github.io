@@ -1,7 +1,7 @@
 var initialColor = {
-    h:20,
-    s:100,
-    v:24
+    h:274,
+    s:49,
+    v:63
 }
 
 var white = {
