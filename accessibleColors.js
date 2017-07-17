@@ -22,6 +22,8 @@ var textColor = {
   b: 100,
 }
 
+var currentColor = initialColor;
+var currentTextColor = white;
 
 var accessibilityValue = 4.5;
 var accessibilityPath;
@@ -44,7 +46,7 @@ function gridData(hue) {
 
       data[row].push({
         x: xpos,
-        y: (100*height) - ypos,
+        y: 100*height - ypos,
         width: width,
         height: height,
         columnPos: columnPos,
@@ -70,7 +72,6 @@ function gridData(hue) {
 
   //Reset Path
   accessibilityPath = "M";
-
   //Build Accessibility Path
   for (var column = 0; column <= 100; column++) {
     for (var row = 0; row <=100; row++) {
@@ -145,7 +146,17 @@ function accessibleColors() {
     .attr('stroke', 'black')
     .attr('class', "accessibilityPath")
     .attr('d', accessibilityPath)
-    .attr('stroke-width', "2");
+    .attr('stroke-width', "1");
+
+  // Draw Current Color
+  svg.append('circle')
+    .attr('fill', 'none')
+    .attr('stroke', "white")
+    .attr('class', 'currentColorCircle')
+    .attr('cx', currentColor.s*2)
+    .attr('cy', 200-(currentColor.v*2))
+    .attr('r', 5)
+    .attr('stroke-width', 2)
 
   // Draw Hue Selector
   var svg = d3.select('#hueSelector');
@@ -159,7 +170,10 @@ function accessibleColors() {
       .attr('height', function(d) {return d.height})
       .attr('fill', function(d) {return d.fill})
       .attr('class', '.hue')
-      .on('mousedown', function(d) {return updateHues(d.hue)})
+      .on('mousedown', function(d) {
+          currentColor.h = d.hue;
+          return update(currentColor,currentTextColor);
+        })
 
   var selector = svg.selectAll('#hueSelector')
         .data(hueSelectorNub)
@@ -190,7 +204,8 @@ function accessibleColors() {
       hueSelectorNubPosition = draggingX;
     }
     d3.select(this).attr('x', d.x = hueSelectorNubPosition);
-    updateHues(Math.round(hueSelectorNubPosition));
+    currentColor.h = Math.round(hueSelectorNubPosition)
+    update(currentColor, currentTextColor);
   }
 
   function dragended(d) {
@@ -198,15 +213,46 @@ function accessibleColors() {
   }
 
   d3.select('#hueInput').on('input', function() {
-    updateHues(this.value);
-
+    currentColor.h = this.value;
+    update(currentColor, currentTextColor);
   });
 
-  // Inital starting hue
-  updateHues(initialColor.h);
-  updateInputs(initialColor, white);
-  updateContrastWarning(initialColor, white);
-  updateDisplay(initialColor, white);
+  d3.select('#satInput').on('input', function() {
+    currentColor.s = this.value;
+    update(currentColor, currentTextColor);
+  });
+
+  d3.select('#brightInput').on('input', function() {
+    currentColor.v = this.value;
+    update(currentColor, currentTextColor);
+  });
+
+  d3.select('#textHueInput').on('input', function() {
+    currentTextColor.h = this.value;
+    update(currentColor, currentTextColor);
+  });
+
+  d3.select('#textSatInput').on('input', function() {
+    currentTextColor.s = parseInt(this.value);
+    update(currentColor, currentTextColor);
+  });
+
+  d3.select('#textBrightInput').on('input', function() {
+    currentTextColor.v = parseInt(this.value);
+    update(currentColor, currentTextColor);
+  });
+
+  // Inital update
+  update(initialColor, white);
+
+  // Global Update
+  function update(currentColor, currentTextColor) {
+    updateDisplay(currentColor, currentTextColor);
+    updateContrastWarning(currentColor,currentTextColor);
+    updateInputs(currentColor, currentTextColor);
+    updateHues(currentColor.h);
+    updateCurrentColorCircle(currentColor);
+  }
 
   function updateDisplay(currentColor, currentTextColor) {
 
@@ -222,7 +268,6 @@ function accessibleColors() {
 
     var cCString = 'background-color: rgb(' + cCR + ',' + cCG + ',' + cCB +')';
     var cTCString = 'color: rgb(' + cTCR + ',' + cTCG + ',' + cTCB +')';
-
 
     d3.select('#myButton').attr('style', cCString + "; " + cTCString);
   }
@@ -257,11 +302,15 @@ function accessibleColors() {
       .selectAll('rect')
         .data(function(d) { return d;})
           .attr('fill', function(d) { return d.fill });
-    d3.select('.accessibilityPath').attr('d', accessibilityPath);
 
+    d3.select('.accessibilityPath').attr('d', accessibilityPath);
   }
 
-
+  function updateCurrentColorCircle(currentColor) {
+    d3.select('.currentColorCircle')
+      .attr('cx', currentColor.s*2)
+      .attr('cy', 200-(currentColor.v*2))
+  }
 }
 
 function plotHSV(hue, x, y) {
@@ -291,9 +340,7 @@ function checkColorContrast(hue, x, y) {
     s: x,
     v: y,
   }
-  var contrast = getColorContrastHSV(tempColorHSV, white);
+  var contrast = getColorContrastHSV(tempColorHSV, currentTextColor);
 
   return (contrast <= accessibilityValue);
 }
-
-// When the hue input changes update the graphic
