@@ -1,5 +1,11 @@
-var colors = ["f5f7fa", "f0f3f6", 'dfe3e6', "8c9ba5", "152934"]
+var colors = ['F73C4B', "F96E79", "1AAC9F", "20C6B6", "DAA725", "F4BB2B", "0F1E25", "2D3B41", '7D8589', "A3A9AC", "FAFBFB"]
 var colorObjects = [];
+
+var white = {
+    h: 0,
+    s: 0,
+    v: 100
+}
 
 for (var i = 0; i < colors.length; i++) {
     var colorRGB = hexToRgb(colors[i]);
@@ -73,14 +79,21 @@ function colorCurve() {
         .attr('cx', function(d,i) { return i * (+svg.attr('width') / colors.length) + 24})
         .attr('r', 16)
         .attr('fill', function(d) { return "#" + d.hex })
-  // d3.select('#color1').on('input', function() {
-  //   update(this.value);
-  // });
 
-  // // Inital starting colors
-  // update(colors)
-
-  // function update(colors) {
-  //   d3.select('#color1').attr('value', colors[0]);
-  // }
+    enterSelection.append('text')
+        .attr('y', +svg.attr('height') - 18)
+        .attr('x', function(d,i) { return i * (+svg.attr('width') / colors.length) + 24})
+        .attr('text-anchor', 'middle')
+        .text(function(d) {
+            var contrastVal = getColorContrastHSV(d, white);
+            var floored = (contrastVal.toString().match(/^-?\d+(?:\.\d{0,1})?/)[0]*1).toFixed(1);
+            return floored})
+        .attr('fill', function(d) {
+            var contrastVal = getColorContrastHSV(d, white);
+            if (contrastVal >= 4.5) {
+                return "white"
+            } else {
+                return "black"
+            }
+        })
 }
