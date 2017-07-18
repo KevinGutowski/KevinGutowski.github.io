@@ -274,7 +274,7 @@ function accessibleColors() {
 
   function updateContrastWarning(currentColor, currentTextColor) {
     var contrastVal = getColorContrastHSV(currentColor, currentTextColor);
-    var floored = (cr.toString().match(/^-?\d+(?:\.\d{0,1})?/)[0]*1).toFixed(1)
+    var floored = (contrastVal.toString().match(/^-?\d+(?:\.\d{0,1})?/)[0]*1).toFixed(1)
     d3.select('#contrastValue').text('Contrast: ' + floored + ':1');
     if (contrastVal >= accessibilityValue) {
       d3.select('#optionalWarning').attr('style', "display:none");
