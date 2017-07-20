@@ -3,10 +3,6 @@
     margin-right: 4px;
 }
 
-a:hover + .cls1 {
-    stroke: #000;
-}
-
 .content {
     background-color: #FAFBFC;
     color: #4a4a4a;
@@ -24,23 +20,48 @@ a:hover + .cls1 {
     fill: black;
 }
 
-#colorPicker {
-    display: inline-block;
+#colorSpaceContainer {
+    display: block;
+    position: relative;
+    width: 200px;
+    height: 200px;
 }
 
-#colorPicker svg {
+#colorSpaceContainer > * {
+    position: absolute;
+    top:0;
+    left:0;
+}
+
+#colorPicker {
     display: block;
 }
 
-#hueSelectorNub {
-    fill: #F2F2F2;
-    stroke-width: 1;
-    stroke: #BDBDBD;
+#colorSpace {
+    display: block;
+    height: 200px;
 }
 
-#hueSelector {
-    margin-top: 8px;
-    border-radius: 2px;
+#hueChannelContainer {
+    display: block;
+    position: relative;
+    width: 200px;
+    height: 10px;
+    margin: 8px 0;
+}
+
+#hueChannelContainer > * {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#hueNubSpace {
+}
+
+#hueChannel {
+    width: 200px;
+    height: 10px;
 }
 
 .buttonAndContrast {

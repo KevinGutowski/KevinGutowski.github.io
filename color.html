@@ -30,8 +30,16 @@
               <p>Content</p>
               <div class="section">
                 <div id="colorPicker">
-                  <svg width="200" height="200" viewbox="0 0 200 200" id="colorSpace"></svg>
-                  <svg width="200" height="10" viewbox="0 0 200 10" preserveAspectRatio='none' id="hueSelector"></svg>
+                  <div id="colorSpaceContainer">
+                    <svg width="200" height ="200" id="satBrightSpace"></svg>
+                    <canvas width="100" height="100" id="colorSpace"></canvas>
+                  </div>
+
+                  <div id="hueChannelContainer">
+                    <svg width="200" height="10" id="hueNubSpace"></svg>
+                    <canvas width="100" height="10" id="hueChannel"></canvas>
+                  </div>
+
                 </div>
                 <div id='inputs'>
                   <div class="formTitle">BUTTON / BG COLOR</div>
