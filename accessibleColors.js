@@ -117,7 +117,7 @@ function accessibleColors() {
     } else if (d3.event.x < 0) {
       colorCircleX = 0;
     } else {
-      colorCircleX = Math.floor(d3.event.x);
+      colorCircleX = d3.event.x;
     }
 
     if (d3.event.y > 200) {
@@ -125,22 +125,20 @@ function accessibleColors() {
     } else if (d3.event.y < 0) {
       colorCircleY = 0;
     } else {
-      colorCircleY = Math.floor(d3.event.y);
+      colorCircleY = d3.event.y;
     }
     d3.select('#currentColorCircle')
-      .attr('cx', colorCircleX)
-      .attr('cy', colorCircleY);
+      .attr('cx', Math.floor(colorCircleX))
+      .attr('cy', Math.floor(colorCircleY));
 
-    currentColor.s = Math.floor(d3.event.x / 2.0)
-    currentColor.v = Math.floor((200.0 - d3.event.y) / 2.0);
+    currentColor.s = Math.floor(colorCircleX / 2.0)
+    currentColor.v = Math.floor((200.0 - colorCircleY) / 2.0);
     update(currentColor, currentTextColor);
   }
 
   function dragendedSatBrightSpace() {
     d3.select(this).classed('active', false);
   }
-
-
 
   // create the accessibility path
   satBrightSpaceSVG.append('path')
@@ -160,15 +158,57 @@ function accessibleColors() {
     .attr('r', 5)
     .attr('stroke-width', 2);
 
-  // create the hue selector nub
+
   var hueNubSpaceSVG = d3.select('#hueNubSpace');
+  hueNubSpaceSVG.call(d3.drag()
+    .on('start', dragstartedHueNubSpace)
+    .on('drag', draggedHueNubSpace)
+    .on('end', dragended)
+  );
+
+  function dragstartedHueNubSpace() {
+    d3.select(this).raise().classed('active', true);
+    d3.select('#hueSelectorNub')
+      .attr('x', Math.floor(d3.event.x))
+      .attr('stroke', '#000000');
+    currentColor.h = Math.floor(d3.event.x * 1.8);
+    update(currentColor, currentTextColor);
+  }
+
+  function draggedHueNubSpace() {
+    var HueX;
+    if (d3.event.x > 200) {
+      HueX = 200;
+    } else if (d3.event.x < 0) {
+      HueX = 0;
+    } else {
+      HueX = d3.event.x;
+    }
+
+    d3.select('#hueSelectorNub')
+      .attr('x', Math.floor(HueX))
+      .attr('stroke', '#000000');
+    currentColor.h = Math.floor(HueX * 1.8);
+    update(currentColor, currentTextColor);
+  }
+
+  function dragended() {
+    d3.select('#hueSelectorNub').attr('stroke', '#8E8E8E');
+    d3.select(this).classed('active', false);
+  }
+
+  // create the hue selector nub
   hueNubSpaceSVG.append('rect')
     .attr('x', currentColor.h / 1.8)
-    .attr('y', '0')
-    .attr('width', '5')
-    .attr('height', '10')
+    .attr('y', 0)
+    .attr('width', 5)
+    .attr('height', 10)
     .attr('id', 'hueSelectorNub')
-    .attr('fill', 'white');
+    .attr('fill', 'white')
+    .attr('stroke-width', 1)
+    .attr('stroke', '#8E8E8E')
+    .attr('rx', 2)
+    .attr('ry', 2);
 
   // Initialize Static Items
   hueChannelData();

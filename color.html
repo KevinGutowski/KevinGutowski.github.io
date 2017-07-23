@@ -28,7 +28,7 @@
           <div class="content">
               <h1>Accessible Color Spaces</h1>
               <p>Content</p>
-              <div class="section">
+              <div class="section" id='section1'>
                 <div id="colorPicker">
                   <div id="colorSpaceContainer">
                     <canvas width="100" height="100" id="colorSpace"></canvas>
@@ -43,24 +43,41 @@
                 </div>
                 <div id='inputs'>
                   <div class="formTitle">BUTTON / BG COLOR</div>
-                  <input type="number" name="hueInput" min="0" max="360" inputmode="numeric" pattern="[0-9]*" id="hueInput" class="buttonColor">
-                  <input type="number" name="satInput" min="0" max="100" inputmode="numeric" pattern="[0-9]*" id="satInput" class="buttonColor">
-                  <input type="number" name="brightInput" min="0" max="100" inputmode="numeric" pattern="[0-9]*" id="brightInput" class="buttonColor">
-
-                  <div class="formTitle">TEXT COLOR</div>
-                  <input type="number" name="textHueInput" min="0" max="360" inputmode="numeric" pattern="[0-9]*" id="textHueInput" class="buttonColor">
-                  <input type="number" name="textSatInput" min="0" max="100" inputmode="numeric" pattern="[0-9]*" id="textSatInput" class="buttonColor">
-                  <input type="number" name="textBrightInput" min="0" max="100" inputmode="numeric" pattern="[0-9]*" id="textBrightInput" class="buttonColor">
+                  <div class='colorInput'>
+                    Hue
+                    <input type="number" name="hueInput" min="0" max="360" inputmode="numeric" pattern="[0-9]*" id="hueInput" class="buttonColor">
+                  </div>
+                  <div class='colorInput'>
+                    Saturation
+                    <input type="number" name="satInput" min="0" max="100" inputmode="numeric" pattern="[0-9]*" id="satInput" class="buttonColor">
+                  </div>
+                  <div class='colorInput'>
+                    Brightness
+                    <input type="number" name="brightInput" min="0" max="100" inputmode="numeric" pattern="[0-9]*" id="brightInput" class="buttonColor">
+                  </div>
+                  <div class="formTitle textColorTitle">TEXT COLOR</div>
+                  <div class='colorInput'>
+                    Hue
+                    <input type="number" name="textHueInput" min="0" max="360" inputmode="numeric" pattern="[0-9]*" id="textHueInput" class="buttonColor">
+                  </div>
+                  <div class='colorInput'>
+                    Saturation
+                    <input type="number" name="textSatInput" min="0" max="100" inputmode="numeric" pattern="[0-9]*" id="textSatInput" class="buttonColor">
+                  </div>
+                  <div class='colorInput'>
+                    Brightness
+                    <input type="number" name="textBrightInput" min="0" max="100" inputmode="numeric" pattern="[0-9]*" id="textBrightInput" class="buttonColor">
+                  </div>
                 </div>
 
                 <div class="buttonAndContrast">
                   <div id='myButton'>My Button</div>
                   <div id="contrastValue">Contrast: 2.6:1</div>
-                  <div id="optionalWarning">!WARNING: Below Contrast Requirement</div>
+                  <div id="optionalWarning">! WARNING: Below Contrast Requirement</div>
                 </div>
 
               </div>
-              <div class="section">
+              <div class="section" id='section2'>
                 <svg width="712" height="500" viewbox="0 0 712 500" id="colorCurve"></svg>
               </div>
 

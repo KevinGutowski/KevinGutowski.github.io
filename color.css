@@ -16,10 +16,14 @@
     margin: 0;
 }
 
-.line {
-    fill: black;
+#section1 {
+    display:flex;
+    justify-content: flex-start;
 }
 
+#section1 > div {
+    margin-right: 8px;
+}
 #colorSpaceContainer {
     display: block;
     position: relative;
@@ -31,10 +35,6 @@
     position: absolute;
     top:0;
     left:0;
-}
-
-#colorPicker {
-    display: block;
 }
 
 #colorSpace {
@@ -64,11 +64,57 @@
     height: 10px;
 }
 
+.formTitle {
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 1px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.formTitle > div {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.colorInput {
+    margin-top: 4px;
+}
+
+.colorInput input {
+    float: right;
+    margin-right: 32px;
+}
+
+.textColorTitle {
+    margin-top: 16px;
+}
+
 .buttonAndContrast {
-    display: inline-block;
+    width: 243px;
+    display: flex;
+    flex-direction: column;
+}
+
+.buttonAndContrast div {
+    align-self: center;
+    margin-bottom: 4px;
 }
 
 #myButton {
     padding: 12px 24px;
     display: inline-block;
+    letter-spacing: 1px;
+}
+
+#contrastValue {
+    font-weight: bold;
+    font-feature-settings: "tnum"
+}
+
+#optionalWarning {
+    font-size: 12px;
+    font-weight: bold;
+    color: red;
+    letter-spacing: .5px;
 }
