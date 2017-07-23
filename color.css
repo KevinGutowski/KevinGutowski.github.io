@@ -3,10 +3,6 @@
     margin-right: 4px;
 }
 
-a:hover + .cls1 {
-    stroke: #000;
-}
-
 .content {
     background-color: #FAFBFC;
     color: #4a4a4a;
@@ -20,34 +16,105 @@ a:hover + .cls1 {
     margin: 0;
 }
 
-.line {
-    fill: black;
+#section1 {
+    display:flex;
+    justify-content: flex-start;
 }
 
-#colorPicker {
-    display: inline-block;
+#section1 > div {
+    margin-right: 8px;
 }
-
-#colorPicker svg {
+#colorSpaceContainer {
     display: block;
+    position: relative;
+    width: 200px;
+    height: 200px;
 }
 
-#hueSelectorNub {
-    fill: #F2F2F2;
-    stroke-width: 1;
-    stroke: #BDBDBD;
+#colorSpaceContainer > * {
+    position: absolute;
+    top:0;
+    left:0;
 }
 
-#hueSelector {
-    margin-top: 8px;
-    border-radius: 2px;
+#colorSpace {
+    display: block;
+    height: 200px;
+}
+
+#hueChannelContainer {
+    display: block;
+    position: relative;
+    width: 200px;
+    height: 10px;
+    margin: 8px 0;
+}
+
+#hueChannelContainer > * {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#hueNubSpace {
+}
+
+#hueChannel {
+    width: 200px;
+    height: 10px;
+}
+
+.formTitle {
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 1px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.formTitle > div {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.colorInput {
+    margin-top: 4px;
+}
+
+.colorInput input {
+    float: right;
+    margin-right: 32px;
+}
+
+.textColorTitle {
+    margin-top: 16px;
 }
 
 .buttonAndContrast {
-    display: inline-block;
+    width: 243px;
+    display: flex;
+    flex-direction: column;
+}
+
+.buttonAndContrast div {
+    align-self: center;
+    margin-bottom: 4px;
 }
 
 #myButton {
     padding: 12px 24px;
     display: inline-block;
+    letter-spacing: 1px;
+}
+
+#contrastValue {
+    font-weight: bold;
+    font-feature-settings: "tnum"
+}
+
+#optionalWarning {
+    font-size: 12px;
+    font-weight: bold;
+    color: red;
+    letter-spacing: .5px;
 }

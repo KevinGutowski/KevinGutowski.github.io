@@ -10,253 +10,224 @@ var white = {
   v: 100,
 }
 
-var backgroundColor = {
-  h: 0,
-  s: 0,
-  b: 0
-}
-
-var textColor = {
-  h: 0,
-  s: 0,
-  b: 100,
-}
-
 var currentColor = initialColor;
 var currentTextColor = white;
-
 var accessibilityValue = 4.5;
-var accessibilityPath;
-
-function gridData(hue) {
-  var data = new Array();
-  var xpos = 0;
-  var ypos = 0;
-  var columnPos = 0;
-  var rowPos = 0;
-  var width = 2;
-  var height = 2;
-
-  //iterate over rows
-
-  for (var row = 0; row <= 100; row++) {
-    data.push( new Array() );
-    // interate for cells
-    for (var column = 0; column <= 100; column++) {
-
-      data[row].push({
-        x: xpos,
-        y: 100*height - ypos,
-        width: width,
-        height: height,
-        columnPos: columnPos,
-        rowPos: rowPos,
-        fill: plotHSV(hue, columnPos, rowPos),
-        hsv: "HSB(" + hue + "," + columnPos + "," + rowPos + ")",
-      })
-
-      // increment x
-      xpos += width;
-      //increment column position by 1
-      columnPos += 1;
-    }
-    // reset x position after row is complete
-    xpos = 0;
-    // reset column position after row is complete
-    columnPos = 0;
-    // increment the y position for the new row
-    ypos += height;
-    // increment the row position for the new row
-    rowPos += 1;
-  }
-
-  //Reset Path
-  accessibilityPath = "M";
-  //Build Accessibility Path
-  for (var column = 0; column <= 100; column++) {
-    for (var row = 0; row <=100; row++) {
-      if (checkColorContrast(hue, column, row)) {
-        var scaledRow = (100 - row) * height;
-        var scaledColumn = column*width;
-        accessibilityPath = accessibilityPath + " " + scaledColumn + " " + scaledRow;
-        break;
-      }
-    }
-  }
-
-  return data;
-}
-
-function hues() {
-  var data = new Array();
-  var xpos = 0;
-  var ypos = 0;
-  var columnPos = 0;
-  var width = 1;
-  var height = 10;
-  for (var hue = 0; hue <= 360; hue++) {
-    data.push({
-      x: xpos / 1.8,
-      y: ypos,
-      width: width,
-      height: height,
-      columnPos: columnPos,
-      hue: hue,
-      fill: plotHSV(hue, 100, 100),
-    })
-
-    // increment x
-    xpos += width;
-    //increment column position by 1
-    columnPos += 1;
-  }
-
-  return data;
-}
-
-var hueSelectorNub = [{x:initialColor.h / 1.8}];
 
 function accessibleColors() {
 
-  //Draw Color Grid
-  var svg = d3.select('#colorSpace');
+  // canvas start
+  var colorSpaceCanvas = document.querySelector('#colorSpace'),
+      cSWidth = colorSpaceCanvas.width,
+      cSHeight = colorSpaceCanvas.height,
+      cSContext = colorSpaceCanvas.getContext('2d'),
+      cSImage = cSContext.createImageData(cSWidth,cSHeight);
 
-  var row = svg.selectAll('.row')
-      .data(gridData(initialColor.h))
-    .enter().append('g')
-      .attr('class', "row");
-
-  var column = row.selectAll('.square')
-    .data(function(d) { return d;})
-  .enter().append('rect')
-    .attr('x', function(d) { return d.x;})
-    .attr('y', function(d) { return d.y;})
-    .attr('width', 0)
-    .attr('height', 0)
-    .attr('fill', function(d) { return d.fill });
-
-  column
-    .attr('width', function(d) { return d.width;})
-    .attr('height', function(d) { return d.height;})
-    .attr('data-hsv', function(d) { return d.hsv})
-
-  // Draw Accessible Curve
-  svg.append('path')
-    .attr('fill', 'none')
-    .attr('stroke', 'black')
-    .attr('class', "accessibilityPath")
-    .attr('d', accessibilityPath)
-    .attr('stroke-width', "1");
-
-  // Draw Current Color
-  svg.append('circle')
-    .attr('fill', 'none')
-    .attr('stroke', "white")
-    .attr('class', 'currentColorCircle')
-    .attr('cx', currentColor.s*2)
-    .attr('cy', 200-(currentColor.v*2))
-    .attr('r', 5)
-    .attr('stroke-width', 2)
-
-  // Draw Hue Selector
-  var svg = d3.select('#hueSelector');
-
-  var hue = svg.selectAll('.hue')
-      .data(hues())
-    .enter().append('rect')
-      .attr('x', function(d) {return d.x;})
-      .attr('y', "0")
-      .attr('width', function(d) {return d.width})
-      .attr('height', function(d) {return d.height})
-      .attr('fill', function(d) {return d.fill})
-      .attr('class', '.hue')
-      .on('mousedown', function(d) {
-          currentColor.h = d.hue;
-          return update(currentColor,currentTextColor);
-        })
-
-  var selector = svg.selectAll('#hueSelector')
-        .data(hueSelectorNub)
-      .enter().append('rect')
-        .attr('x', function(d) {return d.x;})
-        .attr('y', '0')
-        .attr('width', '5')
-        .attr('height', '10')
-        .attr('hue', initialColor.h)
-        .attr('id', "hueSelectorNub")
-        .call(d3.drag()
-          .on('start', dragstarted)
-          .on('drag', dragged)
-          .on('end', dragended));
-
-  function dragstarted(d) {
-    d3.select(this).raise().classed('active', true);
+  // generate image data
+  function gridImageData(hue) {
+    // iterate over rows
+    for (var row = 0, i=-1; row < cSHeight; ++row) {
+      // interate for cells
+      for (var column = 0; column < cSWidth; ++column) {
+        var tempColor = {
+          h: hue,
+          s: column,
+          v: cSHeight - row
+        }
+        var tempRGBColor = HSVtoRGB(normHSV(tempColor));
+        cSImage.data[++i] = Math.round(tempRGBColor.r*255);
+        cSImage.data[++i] = Math.round(tempRGBColor.g*255);
+        cSImage.data[++i] = Math.round(tempRGBColor.b*255);
+        cSImage.data[++i] = 255;
+      }
+    }
+    cSContext.putImageData(cSImage,0,0);
   }
 
-  function dragged(d) {
-    var draggingX = d3.event.x;
-    var hueSelectorNubPosition;
-    if (draggingX > 355) {
-      hueSelectorNubPosition = 355;
-    } else if (draggingX < 0) {
-      hueSelectorNubPosition = 0;
-    } else {
-      hueSelectorNubPosition = draggingX;
+  // generate accessibility curve
+  function getAccessibilityCurve(hue) {
+    var accessibilityPath = "M";
+    var firstCheck; // store the first point in each row (true or false)
+    for (var column = 0; column <= 100; column++) {
+      for (var row = 0; row <= 100; row++) {
+        if (row == 0) {
+          firstCheck = checkColorContrast(hue, column, row);
+        }
+
+        // check if the contrast has changed from false to true or true to false (boundary condition)
+        if (checkColorContrast(hue, column, row) != firstCheck) {
+          var scaledRow = (100 - row) * 2;
+          var scaledColumn = column * 2;
+          accessibilityPath = accessibilityPath + " " + scaledColumn + " " + scaledRow;
+          break;
+        }
+      }
     }
-    d3.select(this).attr('x', d.x = hueSelectorNubPosition);
-    currentColor.h = Math.round(hueSelectorNubPosition)
+    return accessibilityPath;
+  }
+
+  // canvas start
+  var hueChannelCanvas = document.querySelector('#hueChannel'),
+      hCWidth = hueChannelCanvas.width,
+      hCHeight = hueChannelCanvas.height,
+      hCContext = hueChannelCanvas.getContext('2d'),
+      hCImage = hCContext.createImageData(hCWidth, hCHeight);
+
+  // generate hue selector data
+  function hueChannelData() {
+    for (var column = 0, i=-1; column < 360; ++column) {
+      var tempColor = {
+        h: column,
+        s: 100,
+        v: 100
+      }
+      var tempRGBColor = HSVtoRGB(normHSV(tempColor));
+      hCImage.data[++i] = Math.round(tempRGBColor.r*255);
+      hCImage.data[++i] = Math.round(tempRGBColor.g*255);
+      hCImage.data[++i] = Math.round(tempRGBColor.b*255);
+      hCImage.data[++i] = 255;
+    }
+    hCContext.putImageData(hCImage,0,0);
+  }
+
+
+  var satBrightSpaceSVG = d3.select('#satBrightSpace');
+  satBrightSpaceSVG.call(d3.drag()
+    .on('start', dragstartedSatBrightSpace)
+    .on('drag', draggedSatBrightSpace)
+    .on('end', dragendedSatBrightSpace)
+  );
+
+  function dragstartedSatBrightSpace() {
+    d3.select(this).raise().classed('active', true);
+    d3.select('#currentColorCircle')
+      .attr('cx', Math.floor(d3.event.x))
+      .attr('cy', Math.floor(d3.event.y));
+
+    currentColor.s = Math.floor(d3.event.x / 2.0)
+    currentColor.v = Math.floor((200.0 - d3.event.y) / 2.0);
     update(currentColor, currentTextColor);
   }
 
-  function dragended(d) {
+  function draggedSatBrightSpace() {
+    var colorCircleX, colorCircleY;
+
+    if (d3.event.x > 200) {
+      colorCircleX = 200;
+    } else if (d3.event.x < 0) {
+      colorCircleX = 0;
+    } else {
+      colorCircleX = d3.event.x;
+    }
+
+    if (d3.event.y > 200) {
+      colorCircleY = 200;
+    } else if (d3.event.y < 0) {
+      colorCircleY = 0;
+    } else {
+      colorCircleY = d3.event.y;
+    }
+    d3.select('#currentColorCircle')
+      .attr('cx', Math.floor(colorCircleX))
+      .attr('cy', Math.floor(colorCircleY));
+
+    currentColor.s = Math.floor(colorCircleX / 2.0)
+    currentColor.v = Math.floor((200.0 - colorCircleY) / 2.0);
+    update(currentColor, currentTextColor);
+  }
+
+  function dragendedSatBrightSpace() {
     d3.select(this).classed('active', false);
   }
 
-  d3.select('#hueInput').on('input', function() {
-    currentColor.h = this.value;
-    update(currentColor, currentTextColor);
-  });
+  // create the accessibility path
+  satBrightSpaceSVG.append('path')
+    .attr('fill', 'none')
+    .attr('stroke', 'black')
+    .attr('id', 'accessibilityPath')
+    .attr('d', getAccessibilityCurve(currentColor.h))
+    .attr('stroke-width', '1')
 
-  d3.select('#satInput').on('input', function() {
-    currentColor.s = this.value;
-    update(currentColor, currentTextColor);
-  });
+  // create the saturation & brightness selector
+  satBrightSpaceSVG.append('circle')
+    .attr('fill', 'none')
+    .attr('stroke', 'white')
+    .attr('id', 'currentColorCircle')
+    .attr('cx', currentColor.s*2)
+    .attr('cy', 200 -(currentColor.v*2))
+    .attr('r', 5)
+    .attr('stroke-width', 2);
 
-  d3.select('#brightInput').on('input', function() {
-    currentColor.v = this.value;
-    update(currentColor, currentTextColor);
-  });
 
-  d3.select('#textHueInput').on('input', function() {
-    currentTextColor.h = this.value;
-    update(currentColor, currentTextColor);
-  });
+  var hueNubSpaceSVG = d3.select('#hueNubSpace');
+  hueNubSpaceSVG.call(d3.drag()
+    .on('start', dragstartedHueNubSpace)
+    .on('drag', draggedHueNubSpace)
+    .on('end', dragended)
+  );
 
-  d3.select('#textSatInput').on('input', function() {
-    currentTextColor.s = parseInt(this.value);
+  function dragstartedHueNubSpace() {
+    d3.select(this).raise().classed('active', true);
+    d3.select('#hueSelectorNub')
+      .attr('x', Math.floor(d3.event.x))
+      .attr('stroke', '#000000');
+    currentColor.h = Math.floor(d3.event.x * 1.8);
     update(currentColor, currentTextColor);
-  });
+  }
 
-  d3.select('#textBrightInput').on('input', function() {
-    currentTextColor.v = parseInt(this.value);
+  function draggedHueNubSpace() {
+    var HueX;
+    if (d3.event.x > 200) {
+      HueX = 200;
+    } else if (d3.event.x < 0) {
+      HueX = 0;
+    } else {
+      HueX = d3.event.x;
+    }
+
+    d3.select('#hueSelectorNub')
+      .attr('x', Math.floor(HueX))
+      .attr('stroke', '#000000');
+    currentColor.h = Math.floor(HueX * 1.8);
     update(currentColor, currentTextColor);
-  });
+  }
 
-  // Inital update
-  update(initialColor, white);
+  function dragended() {
+    d3.select('#hueSelectorNub').attr('stroke', '#8E8E8E');
+    d3.select(this).classed('active', false);
+  }
+
+  // create the hue selector nub
+  hueNubSpaceSVG.append('rect')
+    .attr('x', currentColor.h / 1.8)
+    .attr('y', 0)
+    .attr('width', 5)
+    .attr('height', 10)
+    .attr('id', 'hueSelectorNub')
+    .attr('fill', 'white')
+    .attr('stroke-width', 1)
+    .attr('stroke', '#8E8E8E')
+    .attr('rx', 2)
+    .attr('ry', 2);
+
+  // Initialize Static Items
+  hueChannelData();
+
+  // Initialize Items that Update
+  update(initialColor, white)
 
   // Global Update
   function update(currentColor, currentTextColor) {
-    updateDisplay(currentColor, currentTextColor);
-    updateContrastWarning(currentColor,currentTextColor);
+    updateExampleButton(currentColor, currentTextColor);
+    updateContrastWarning(currentColor, currentTextColor);
     updateInputs(currentColor, currentTextColor);
     updateHues(currentColor.h);
     updateCurrentColorCircle(currentColor);
   }
 
-  function updateDisplay(currentColor, currentTextColor) {
-
+  function updateExampleButton(currentColor, currentTextColor) {
     var normCurrentColorRGB = HSVtoRGB(normHSV(currentColor));
+
     var cCR = Math.round(normCurrentColorRGB.r*255);
     var cCG = Math.round(normCurrentColorRGB.g*255);
     var cCB = Math.round(normCurrentColorRGB.b*255);
@@ -281,66 +252,69 @@ function accessibleColors() {
     } else {
       d3.select('#optionalWarning').attr('style', "display:inherit");
     }
-
   }
 
-  function updateInputs(backgroundColor, textColor) {
-    d3.select('#hueInput').property('value', backgroundColor.h);
-    d3.select('#satInput').property('value', backgroundColor.s);
-    d3.select('#brightInput').property('value', backgroundColor.v);
+  function updateInputs(currentColor, currentTextColor) {
+    d3.select('#hueInput').property('value', currentColor.h);
+    d3.select('#satInput').property('value', currentColor.s);
+    d3.select('#brightInput').property('value', currentColor.v);
 
-    d3.select('#textHueInput').property('value', textColor.h);
-    d3.select('#textSatInput').property('value', textColor.s);
-    d3.select('#textBrightInput').property('value', textColor.v);
+    d3.select('#textHueInput').property('value', currentTextColor.h);
+    d3.select('#textSatInput').property('value', currentTextColor.s);
+    d3.select('#textBrightInput').property('value', currentTextColor.v);
   }
 
   function updateHues(hue) {
-    d3.select('#hueInput').property('value', hue);
     d3.select('#hueSelectorNub').attr('x', hue / 1.8).attr('hue', hue);
-    d3.selectAll('.row')
-        .data(gridData(hue))
-      .selectAll('rect')
-        .data(function(d) { return d;})
-          .attr('fill', function(d) { return d.fill });
-
-    d3.select('.accessibilityPath').attr('d', accessibilityPath);
+    gridImageData(hue);
+    d3.select('#accessibilityPath').attr('d', getAccessibilityCurve(hue));
   }
 
   function updateCurrentColorCircle(currentColor) {
-    d3.select('.currentColorCircle')
+    d3.select('#currentColorCircle')
       .attr('cx', currentColor.s*2)
-      .attr('cy', 200-(currentColor.v*2))
-  }
-}
-
-function plotHSV(hue, x, y) {
-  var tempColorHSV = {
-    h: hue,
-    s: x,
-    v: y,
+      .attr('cy', 200 - (currentColor.v*2))
   }
 
-  var tempColorRGBnormalized = HSVtoRGB(normHSV(tempColorHSV));
+  // Interaction handlers
+  d3.select('#hueInput').on('input', function() {
+    currentColor.h = this.value;
+    update(currentColor, currentTextColor);
+  });
 
-  var tempColorRGB =
-    "rgb(" +
-    Math.round(tempColorRGBnormalized.r*255)
-    + "," +
-    Math.round(tempColorRGBnormalized.g*255)
-    + "," +
-    Math.round(tempColorRGBnormalized.b*255)
-     + ")";
+  d3.select('#satInput').on('input', function() {
+    currentColor.s = this.value;
+    update(currentColor, currentTextColor);
+  });
 
-  return tempColorRGB;
+  d3.select('#brightInput').on('input', function() {
+    currentColor.v = this.value;
+    update(currentColor, currentTextColor);
+  });
+
+  d3.select('#textHueInput').on('input', function() {
+    currentTextColor.h = this.value;
+    update(currentColor, currentTextColor);
+  });
+
+  d3.select('#textSatInput').on('input', function() {
+    currentTextColor.s = this.value;
+    update(currentColor, currentTextColor);
+  });
+
+  d3.select('#textBrightInput').on('input', function() {
+    currentTextColor.v = this.value;
+    update(currentColor, currentTextColor);
+  });
+
 }
 
 function checkColorContrast(hue, x, y) {
-  var tempColorHSV = {
+  var tempColor = {
     h: hue,
     s: x,
-    v: y,
+    v: y
   }
-  var contrast = getColorContrastHSV(tempColorHSV, currentTextColor);
-
-  return (contrast <= accessibilityValue);
+  var contrast = getColorContrastHSV(tempColor, currentTextColor);
+  return (contrast >= accessibilityValue)
 }
