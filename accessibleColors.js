@@ -10,23 +10,12 @@ var white = {
   v: 100,
 }
 
-var backgroundColor = {
-  h: 0,
-  s: 0,
-  b: 0
-}
-
-var textColor = {
-  h: 0,
-  s: 0,
-  b: 100,
-}
-
 var currentColor = initialColor;
 var currentTextColor = white;
 var accessibilityValue = 4.5;
 
 function accessibleColors() {
+
   // canvas start
   var colorSpaceCanvas = document.querySelector('#colorSpace'),
       cSWidth = colorSpaceCanvas.width,
@@ -58,9 +47,15 @@ function accessibleColors() {
   // generate accessibility curve
   function getAccessibilityCurve(hue) {
     var accessibilityPath = "M";
+    var firstCheck; // store the first point in each row (true or false)
     for (var column = 0; column <= 100; column++) {
       for (var row = 0; row <= 100; row++) {
-        if (checkColorContrast(hue, column, row)) {
+        if (row == 0) {
+          firstCheck = checkColorContrast(hue, column, row);
+        }
+
+        // check if the contrast has changed from false to true or true to false (boundary condition)
+        if (checkColorContrast(hue, column, row) != firstCheck) {
           var scaledRow = (100 - row) * 2;
           var scaledColumn = column * 2;
           accessibilityPath = accessibilityPath + " " + scaledColumn + " " + scaledRow;
