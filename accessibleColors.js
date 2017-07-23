@@ -90,14 +90,65 @@ function accessibleColors() {
     hCContext.putImageData(hCImage,0,0);
   }
 
-  // create the accessibility path
+
   var satBrightSpaceSVG = d3.select('#satBrightSpace');
+  satBrightSpaceSVG.call(d3.drag()
+    .on('start', dragstartedSatBrightSpace)
+    .on('drag', draggedSatBrightSpace)
+    .on('end', dragendedSatBrightSpace)
+  );
+
+  function dragstartedSatBrightSpace() {
+    d3.select(this).raise().classed('active', true);
+    d3.select('#currentColorCircle')
+      .attr('cx', Math.floor(d3.event.x))
+      .attr('cy', Math.floor(d3.event.y));
+
+    currentColor.s = Math.floor(d3.event.x / 2.0)
+    currentColor.v = Math.floor((200.0 - d3.event.y) / 2.0);
+    update(currentColor, currentTextColor);
+  }
+
+  function draggedSatBrightSpace() {
+    var colorCircleX, colorCircleY;
+
+    if (d3.event.x > 200) {
+      colorCircleX = 200;
+    } else if (d3.event.x < 0) {
+      colorCircleX = 0;
+    } else {
+      colorCircleX = Math.floor(d3.event.x);
+    }
+
+    if (d3.event.y > 200) {
+      colorCircleY = 200;
+    } else if (d3.event.y < 0) {
+      colorCircleY = 0;
+    } else {
+      colorCircleY = Math.floor(d3.event.y);
+    }
+    d3.select('#currentColorCircle')
+      .attr('cx', colorCircleX)
+      .attr('cy', colorCircleY);
+
+    currentColor.s = Math.floor(d3.event.x / 2.0)
+    currentColor.v = Math.floor((200.0 - d3.event.y) / 2.0);
+    update(currentColor, currentTextColor);
+  }
+
+  function dragendedSatBrightSpace() {
+    d3.select(this).classed('active', false);
+  }
+
+
+
+  // create the accessibility path
   satBrightSpaceSVG.append('path')
     .attr('fill', 'none')
     .attr('stroke', 'black')
     .attr('id', 'accessibilityPath')
     .attr('d', getAccessibilityCurve(currentColor.h))
-    .attr('stroke-width', '1');
+    .attr('stroke-width', '1')
 
   // create the saturation & brightness selector
   satBrightSpaceSVG.append('circle')
