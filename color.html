@@ -68,12 +68,32 @@
                     Brightness
                     <input type="number" name="textBrightInput" min="0" max="100" inputmode="numeric" pattern="[0-9]*" id="textBrightInput" class="buttonColor">
                   </div>
+                  <div class="formTitle contrastRequirementTitle">CONTRAST REQUIREMENT</div>
+                  <form>
+                    <input type="radio" name="contrastValue" value='3.5'><label for="3.5">3.2:1</label>
+                    <input type="radio" name="contrastValue" value='4.5' checked='checked'><label for="4.5">4.5:1</label>
+                    <input type="radio" name="contrastValue" value='7.0'><label for="7.0">7:1</label>
+                  </form>
                 </div>
 
-                <div class="buttonAndContrast">
-                  <div id='myButton'>My Button</div>
-                  <div id="contrastValue">Contrast: 2.6:1</div>
-                  <div id="optionalWarning">! WARNING: Below Contrast Requirement</div>
+                <div class="thirdColumn">
+                  <div id="buttonAndContrast">
+                    <div id='myButton'>My Button</div>
+                    <div id="contrastValue">Contrast: 2.6:1</div>
+                    <div id="optionalWarning">! WARNING: Below Contrast Requirement</div>
+                  </div>
+
+                  <div>
+                    <input type="checkbox" name="showCloseColors" checked='checked'><label for="showCloseColors">View closest accessible colors</label>
+                    <div id="closestColorsContainer">
+                      <div class="formTitle">HOLD CONSTANT</div>
+                      <form>
+                        <input type="radio" name="holdConstant" value='Hue' checked='checked'><label for="Hue">Hue</label>
+                        <input type="radio" name="holdConstant" value='Saturation' ><label for="Saturation">Saturation</label>
+                        <input type="radio" name="holdConstant" value='Brightness'><label for="Brightness">Brightness</label>
+                      </form>
+                    </div>
+                  </div>
                 </div>
 
               </div>

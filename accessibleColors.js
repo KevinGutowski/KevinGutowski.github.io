@@ -1,7 +1,7 @@
 var initialColor = {
-    h:274,
-    s:49,
-    v:63
+    h:255,
+    s:31,
+    v:80
 }
 
 var white = {
@@ -12,7 +12,8 @@ var white = {
 
 var currentColor = initialColor;
 var currentTextColor = white;
-var accessibilityValue = 4.5;
+var currentContrastRequirement = 4.5;
+var showCloseColorsChecked = true;
 
 function accessibleColors() {
 
@@ -45,17 +46,17 @@ function accessibleColors() {
   }
 
   // generate accessibility curve
-  function getAccessibilityCurve(hue) {
+  function getAccessibilityCurve(hue, contrastRequirement) {
     var accessibilityPath = "M";
     var firstCheck; // store the first point in each row (true or false)
     for (var column = 0; column <= 100; column++) {
       for (var row = 0; row <= 100; row++) {
         if (row == 0) {
-          firstCheck = checkColorContrast(hue, column, row);
+          firstCheck = checkColorContrast(hue, column, row, contrastRequirement);
         }
 
         // check if the contrast has changed from false to true or true to false (boundary condition)
-        if (checkColorContrast(hue, column, row) != firstCheck) {
+        if (checkColorContrast(hue, column, row, contrastRequirement) != firstCheck) {
           var scaledRow = (100 - row) * 2;
           var scaledColumn = column * 2;
           accessibilityPath = accessibilityPath + " " + scaledColumn + " " + scaledRow;
@@ -64,6 +65,42 @@ function accessibleColors() {
       }
     }
     return accessibilityPath;
+  }
+
+  function getClosestColors(currentColor, contrastRequirement) {
+  }
+
+  function getClosestSatCirclePosition(currentColor, contrastRequirement) {
+    var position;
+    for (var row = currentColor.v; row >= 0; row--) {
+          if (checkColorContrast(currentColor.h, currentColor.s, row, contrastRequirement) == true) {
+          var scaledRow = (100 - row) * 2;
+          var scaledColumn = currentColor.s * 2;
+          position = {
+            x: scaledColumn,
+            y: scaledRow - 2 // minus 2 to position it better on the line?
+          }
+          break;
+        }
+    }
+
+    return position;
+  }
+
+  function getClosestBrightCirclePosition(currentColor,contrastRequirement) {
+    var position;
+    for (var column = currentColor.s; column <= 100; column++) {
+      if (checkColorContrast(currentColor.h, column, currentColor.v, contrastRequirement) == true) {
+        var scaledRow = (100 - currentColor.v) * 2;
+          var scaledColumn = column * 2;
+          position = {
+            x: scaledColumn,
+            y: scaledRow - 2
+          }
+          break;
+      }
+    }
+    return position;
   }
 
   // canvas start
@@ -106,7 +143,7 @@ function accessibleColors() {
 
     currentColor.s = Math.floor(d3.event.x / 2.0)
     currentColor.v = Math.floor((200.0 - d3.event.y) / 2.0);
-    update(currentColor, currentTextColor);
+    update(currentColor, currentTextColor, currentContrastRequirement);
   }
 
   function draggedSatBrightSpace() {
@@ -133,7 +170,7 @@ function accessibleColors() {
 
     currentColor.s = Math.floor(colorCircleX / 2.0)
     currentColor.v = Math.floor((200.0 - colorCircleY) / 2.0);
-    update(currentColor, currentTextColor);
+    update(currentColor, currentTextColor, currentContrastRequirement);
   }
 
   function dragendedSatBrightSpace() {
@@ -145,7 +182,7 @@ function accessibleColors() {
     .attr('fill', 'none')
     .attr('stroke', 'black')
     .attr('id', 'accessibilityPath')
-    .attr('d', getAccessibilityCurve(currentColor.h))
+    .attr('d', getAccessibilityCurve(currentColor.h, currentContrastRequirement))
     .attr('stroke-width', '1')
 
   // create the saturation & brightness selector
@@ -157,6 +194,26 @@ function accessibleColors() {
     .attr('cy', 200 -(currentColor.v*2))
     .attr('r', 5)
     .attr('stroke-width', 2);
+
+    // If showCloseColors is checked
+  if (showCloseColorsChecked) {
+    satBrightSpaceSVG.append('circle')
+    .attr('fill', 'black')
+    .attr('stroke', 'none')
+    .attr('id', 'closestSatCircle')
+    .attr('cx', getClosestSatCirclePosition(currentColor,currentContrastRequirement).x)
+    .attr('cy', getClosestSatCirclePosition(currentColor,currentContrastRequirement).y)
+    .attr('r', 5);
+
+    satBrightSpaceSVG.append('circle')
+    .attr('fill', 'black')
+    .attr('stroke', 'none')
+    .attr('id', 'closestBrightCircle')
+    .attr('cx', getClosestBrightCirclePosition(currentColor,currentContrastRequirement).x)
+    .attr('cy', getClosestBrightCirclePosition(currentColor,currentContrastRequirement).y)
+    .attr('r', 5);
+  }
+
 
 
   var hueNubSpaceSVG = d3.select('#hueNubSpace');
@@ -172,7 +229,7 @@ function accessibleColors() {
       .attr('x', Math.floor(d3.event.x))
       .attr('stroke', '#000000');
     currentColor.h = Math.floor(d3.event.x * 1.8);
-    update(currentColor, currentTextColor);
+    update(currentColor, currentTextColor, currentContrastRequirement);
   }
 
   function draggedHueNubSpace() {
@@ -189,7 +246,7 @@ function accessibleColors() {
       .attr('x', Math.floor(HueX))
       .attr('stroke', '#000000');
     currentColor.h = Math.floor(HueX * 1.8);
-    update(currentColor, currentTextColor);
+    update(currentColor, currentTextColor, currentContrastRequirement);
   }
 
   function dragended() {
@@ -214,15 +271,20 @@ function accessibleColors() {
   hueChannelData();
 
   // Initialize Items that Update
-  update(initialColor, white)
+  update(initialColor, white, currentContrastRequirement)
 
   // Global Update
-  function update(currentColor, currentTextColor) {
+  function update(currentColor, currentTextColor, currentContrastRequirement) {
     updateExampleButton(currentColor, currentTextColor);
     updateContrastWarning(currentColor, currentTextColor);
     updateInputs(currentColor, currentTextColor);
-    updateHues(currentColor.h);
+    updateAccessibilityPath(currentColor.h, currentContrastRequirement);
+    updateSatBrightSpace(currentColor.h);
     updateCurrentColorCircle(currentColor);
+    if (showCloseColorsChecked) {
+      updateCloseSaturationColor(currentColor, currentContrastRequirement);
+      updateCloseBrightnessColor(currentColor, currentContrastRequirement);
+    }
   }
 
   function updateExampleButton(currentColor, currentTextColor) {
@@ -247,7 +309,7 @@ function accessibleColors() {
     var contrastVal = getColorContrastHSV(currentColor, currentTextColor);
     var floored = (contrastVal.toString().match(/^-?\d+(?:\.\d{0,1})?/)[0]*1).toFixed(1)
     d3.select('#contrastValue').text('Contrast: ' + floored + ':1');
-    if (contrastVal >= accessibilityValue) {
+    if (contrastVal >= currentContrastRequirement) {
       d3.select('#optionalWarning').attr('style', "display:none");
     } else {
       d3.select('#optionalWarning').attr('style', "display:inherit");
@@ -264,10 +326,13 @@ function accessibleColors() {
     d3.select('#textBrightInput').property('value', currentTextColor.v);
   }
 
-  function updateHues(hue) {
+  function updateAccessibilityPath(hue, contrastRequirement) {
+    d3.select('#accessibilityPath').attr('d', getAccessibilityCurve(hue, contrastRequirement));
+  }
+
+  function updateSatBrightSpace(hue) {
     d3.select('#hueSelectorNub').attr('x', hue / 1.8).attr('hue', hue);
     gridImageData(hue);
-    d3.select('#accessibilityPath').attr('d', getAccessibilityCurve(hue));
   }
 
   function updateCurrentColorCircle(currentColor) {
@@ -276,45 +341,70 @@ function accessibleColors() {
       .attr('cy', 200 - (currentColor.v*2))
   }
 
+  function updateCloseSaturationColor(currentColor, currentContrastRequirement) {
+    d3.select('#closestSatCircle')
+      .attr('cx', getClosestSatCirclePosition(currentColor,currentContrastRequirement).x)
+      .attr('cy', getClosestSatCirclePosition(currentColor,currentContrastRequirement).y);
+  }
+
+  function updateCloseBrightnessColor(currentColor, currentContrastRequirement) {
+    d3.select('#closestBrightCircle')
+      .attr('cx', getClosestBrightCirclePosition(currentColor,currentContrastRequirement).x)
+      .attr('cy', getClosestBrightCirclePosition(currentColor,currentContrastRequirement).y);
+  }
+
   // Interaction handlers
   d3.select('#hueInput').on('input', function() {
     currentColor.h = this.value;
-    update(currentColor, currentTextColor);
+    update(currentColor, currentTextColor, currentContrastRequirement);
   });
 
   d3.select('#satInput').on('input', function() {
     currentColor.s = this.value;
-    update(currentColor, currentTextColor);
+    update(currentColor, currentTextColor, currentContrastRequirement);
   });
 
   d3.select('#brightInput').on('input', function() {
     currentColor.v = this.value;
-    update(currentColor, currentTextColor);
+    update(currentColor, currentTextColor, currentContrastRequirement);
   });
 
   d3.select('#textHueInput').on('input', function() {
     currentTextColor.h = this.value;
-    update(currentColor, currentTextColor);
+    update(currentColor, currentTextColor, currentContrastRequirement);
   });
 
   d3.select('#textSatInput').on('input', function() {
     currentTextColor.s = this.value;
-    update(currentColor, currentTextColor);
+    update(currentColor, currentTextColor, currentContrastRequirement);
   });
 
   d3.select('#textBrightInput').on('input', function() {
     currentTextColor.v = this.value;
-    update(currentColor, currentTextColor);
+    update(currentColor, currentTextColor, currentContrastRequirement);
   });
 
+  d3.selectAll(("input[name='contrastValue']")).on("change", function(){
+    currentContrastRequirement = this.value;
+    update(currentColor,currentTextColor,currentContrastRequirement);
+  });
+
+  d3.selectAll(("input[name='showCloseColors']")).on("change", function(){
+    showCloseColorsChecked = this.checked;
+    if (!this.checked) {
+      d3.select("#closestColorsContainer").attr('style', "display:none;")
+    } else {
+      d3.select("#closestColorsContainer").attr('style', "display:inherit;")
+    }
+  });
 }
 
-function checkColorContrast(hue, x, y) {
+function checkColorContrast(hue, x, y, contrastRequirement) {
   var tempColor = {
     h: hue,
     s: x,
     v: y
   }
   var contrast = getColorContrastHSV(tempColor, currentTextColor);
-  return (contrast >= accessibilityValue)
+  return (contrast >= contrastRequirement)
 }

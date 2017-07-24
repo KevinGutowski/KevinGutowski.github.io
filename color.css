@@ -22,7 +22,7 @@
 }
 
 #section1 > div {
-    margin-right: 8px;
+    margin-right: 16px;
 }
 #colorSpaceContainer {
     display: block;
@@ -90,13 +90,18 @@
     margin-top: 16px;
 }
 
-.buttonAndContrast {
+.contrastRequirementTitle {
+    margin-top:16px;
+}
+
+#buttonAndContrast {
     width: 243px;
+    height: 91px;
     display: flex;
     flex-direction: column;
 }
 
-.buttonAndContrast div {
+#buttonAndContrast div {
     align-self: center;
     margin-bottom: 4px;
 }
@@ -117,4 +122,12 @@
     font-weight: bold;
     color: red;
     letter-spacing: .5px;
+}
+
+form {
+    margin-top: 4px;
+}
+
+#closestColorsContainer .formTitle {
+    margin-top: 8px;
 }
