@@ -1,12 +1,12 @@
 var initialColor = {
-    h:255,
-    s:31,
-    v:80
+    h:54,
+    s:39,
+    v:88
 }
 
 var white = {
-  h: 0,
-  s: 0,
+  h: 251,
+  s: 75,
   v: 100,
 }
 
@@ -14,6 +14,8 @@ var currentColor = initialColor;
 var currentTextColor = white;
 var currentContrastRequirement = 4.5;
 var showCloseColorsChecked = true;
+var accessibilityArray1 = [];
+var accessibilityArray2 = [];
 
 function accessibleColors() {
 
@@ -45,59 +47,134 @@ function accessibleColors() {
     cSContext.putImageData(cSImage,0,0);
   }
 
-  // generate accessibility curve
-  function getAccessibilityCurve(hue, contrastRequirement) {
-    var accessibilityPath = "M";
+  // generate accessibility curve(s)
+  function getAccessibilityCurves(hue, contrastRequirement) {
+    var accessibilityPath1 = "M";
+    var accessibilityPath2 = "M";
     var firstCheck; // store the first point in each row (true or false)
+    var previousInitialBoundary;
     for (var column = 0; column <= 100; column++) {
+      var accessibilityPath1Found = false;
       for (var row = 0; row <= 100; row++) {
         if (row == 0) {
           firstCheck = checkColorContrast(hue, column, row, contrastRequirement);
+          previousInitialBoundary = firstCheck;
         }
 
-        // check if the contrast has changed from false to true or true to false (boundary condition)
-        if (checkColorContrast(hue, column, row, contrastRequirement) != firstCheck) {
-          var scaledRow = (100 - row) * 2;
-          var scaledColumn = column * 2;
-          accessibilityPath = accessibilityPath + " " + scaledColumn + " " + scaledRow;
-          break;
+        if (accessibilityPath1Found == false) {
+          // check if the contrast has changed from false to true or true to false (boundary condition)
+          if (checkColorContrast(hue, column, row, contrastRequirement) != firstCheck) {
+            var scaledRow = (100 - row) * 2;
+            var scaledColumn = column * 2;
+            accessibilityPath1 = accessibilityPath1 + " " + scaledColumn + " " + scaledRow;
+            accessibilityArray1.push(scaledRow);
+            accessibilityPath1Found = true;
+          }
+        }
+
+        if (accessibilityPath1Found) {
+          if (checkColorContrast(hue, column, row, contrastRequirement) == firstCheck) {
+            var scaledRow = (100 - row) * 2;
+            var scaledColumn = column * 2;
+            accessibilityPath2 = accessibilityPath2 + " " + scaledColumn + " " + scaledRow;
+            accessibilityArray2.push(scaledRow);
+            break;
+          }
         }
       }
     }
-    return accessibilityPath;
+    return [accessibilityPath1, accessibilityPath2];
   }
 
   function getClosestColors(currentColor, contrastRequirement) {
   }
 
   function getClosestSatCirclePosition(currentColor, contrastRequirement) {
-    var position;
-    for (var row = currentColor.v; row >= 0; row--) {
-          if (checkColorContrast(currentColor.h, currentColor.s, row, contrastRequirement) == true) {
-          var scaledRow = (100 - row) * 2;
-          var scaledColumn = currentColor.s * 2;
+    var position, firstCheck;
+    var foundBoundaryInRow = false;
+    for (var row = 0; row <= 100; row++) {
+      if (row == 0) {
+        firstCheck = checkColorContrast(currentColor.h, currentColor.s, row, contrastRequirement);
+      }
+
+      if (checkColorContrast(currentColor.h, currentColor.s, row, contrastRequirement) != firstCheck) {
+        foundBoundaryInRow = true;
+        var scaledRow = (100 - row) * 2;
+        var scaledColumn = currentColor.s * 2;
+        position = {
+            x: scaledColumn,
+            y: scaledRow
+        }
+        break;
+      }
+    }
+
+    if (foundBoundaryInRow == false) {
+      // check columns behind current color
+      // Don't need to start checking the currentColor column but rather currentColor column - 1 becuase we already checked the currentColor colummn above
+      for (var column = 100; column >= 0; column--) {
+        if (checkColorContrast(currentColor.h, column, 100, contrastRequirement) != firstCheck) {
+          foundBoundaryInRow = true;
+          var scaledRow = (100 - 100) * 2;
+          var scaledColumn = column * 2;
           position = {
             x: scaledColumn,
-            y: scaledRow - 2 // minus 2 to position it better on the line?
+            y: scaledRow // minus 2 to position it better on the line?
           }
           break;
         }
+      }
     }
-
     return position;
   }
 
   function getClosestBrightCirclePosition(currentColor,contrastRequirement) {
-    var position;
-    for (var column = currentColor.s; column <= 100; column++) {
-      if (checkColorContrast(currentColor.h, column, currentColor.v, contrastRequirement) == true) {
+    var position, firstCheck;
+    var foundBoundaryInColumn = false;
+    for (var column = 0; column <= 100; column++) {
+      if (column == 0) {
+        firstCheck = checkColorContrast(currentColor.h, column, currentColor.v, contrastRequirement);
+      }
+
+      if (checkColorContrast(currentColor.h, column, currentColor.v, contrastRequirement) != firstCheck) {
+        foundBoundaryInColumn = true;
         var scaledRow = (100 - currentColor.v) * 2;
-          var scaledColumn = column * 2;
+        var scaledColumn = column * 2;
+        position = {
+          x: scaledColumn,
+          y: scaledRow - 2
+        }
+        break;
+      }
+    }
+
+    if (foundBoundaryInColumn == false) {
+      for (var row = 100; row >= 0; row--) {
+        if (checkColorContrast(currentColor.h, 100, row, contrastRequirement) != firstCheck) {
+          foundBoundaryInColumn = true;
+          var scaledRow = (100 - row) * 2;
+          var scaledColumn = 100 * 2;
           position = {
             x: scaledColumn,
-            y: scaledRow - 2
+            y: scaledRow - 2,
           }
           break;
+        }
+      }
+    }
+
+    if (foundBoundaryInColumn == false) {
+      for (var row = 0; row <= 100; row++) {
+        if (checkColorContrast(currentColor.h, 0, row, contrastRequirement) != firstCheck) {
+          foundBoundaryInColumn = true;
+          var scaledRow = (100 - row) * 2;
+          var scaledColumn = 0 * 2;
+          position = {
+            x: scaledColumn,
+            y: scaledRow - 2,
+          }
+          break;
+        }
       }
     }
     return position;
@@ -177,12 +254,19 @@ function accessibleColors() {
     d3.select(this).classed('active', false);
   }
 
-  // create the accessibility path
+  // create the accessibility paths
   satBrightSpaceSVG.append('path')
     .attr('fill', 'none')
     .attr('stroke', 'black')
-    .attr('id', 'accessibilityPath')
-    .attr('d', getAccessibilityCurve(currentColor.h, currentContrastRequirement))
+    .attr('id', 'accessibilityPath1')
+    .attr('d', getAccessibilityCurves(currentColor.h, currentContrastRequirement)[0])
+    .attr('stroke-width', '1')
+
+  satBrightSpaceSVG.append('path')
+    .attr('fill', 'none')
+    .attr('stroke', 'black')
+    .attr('id', 'accessibilityPath2')
+    .attr('d', getAccessibilityCurves(currentColor.h, currentContrastRequirement)[1])
     .attr('stroke-width', '1')
 
   // create the saturation & brightness selector
@@ -327,7 +411,8 @@ function accessibleColors() {
   }
 
   function updateAccessibilityPath(hue, contrastRequirement) {
-    d3.select('#accessibilityPath').attr('d', getAccessibilityCurve(hue, contrastRequirement));
+    d3.select('#accessibilityPath1').attr('d', getAccessibilityCurves(hue, contrastRequirement)[0]);
+    d3.select('#accessibilityPath2').attr('d', getAccessibilityCurves(hue, contrastRequirement)[1]);
   }
 
   function updateSatBrightSpace(hue) {
