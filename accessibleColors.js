@@ -14,8 +14,8 @@ var currentColor = initialColor;
 var currentTextColor = white;
 var currentContrastRequirement = 4.5;
 var showCloseColorsChecked = true;
-var accessibilityArray1 = [];
-var accessibilityArray2 = [];
+var accessibilityArray1 = new Array(100);
+var accessibilityArray2 = new Array(100);
 
 function accessibleColors() {
 
@@ -65,7 +65,7 @@ function accessibleColors() {
             var scaledRow = (100 - row) * 2;
             var scaledColumn = column * 2;
             accessibilityPath1 = accessibilityPath1 + " " + scaledColumn + " " + scaledRow;
-            accessibilityArray1.push(scaledRow);
+            accessibilityArray1[column] = scaledRow;
             accessibilityPath1Found = true;
           }
         }
@@ -75,7 +75,7 @@ function accessibleColors() {
             var scaledRow = (100 - row) * 2;
             var scaledColumn = column * 2;
             accessibilityPath2 = accessibilityPath2 + " " + scaledColumn + " " + scaledRow;
-            accessibilityArray2.push(scaledRow);
+            accessibilityArray2[column] = scaledRow;
             break;
           }
         }
@@ -410,7 +410,9 @@ function accessibleColors() {
 
   function updateAccessibilityPath(hue, contrastRequirement) {
     d3.select('#accessibilityPath1').attr('d', getAccessibilityCurves(hue, contrastRequirement)[0]);
+    console.log(accessibilityArray1);
     d3.select('#accessibilityPath2').attr('d', getAccessibilityCurves(hue, contrastRequirement)[1]);
+    console.log(accessibilityArray2);
   }
 
   function updateSatBrightSpace(hue) {
