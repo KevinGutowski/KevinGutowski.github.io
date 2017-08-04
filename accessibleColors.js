@@ -52,13 +52,11 @@ function accessibleColors() {
     var accessibilityPath1 = "M";
     var accessibilityPath2 = "M";
     var firstCheck; // store the first point in each row (true or false)
-    var previousInitialBoundary;
     for (var column = 0; column <= 100; column++) {
       var accessibilityPath1Found = false;
       for (var row = 0; row <= 100; row++) {
         if (row == 0) {
           firstCheck = checkColorContrast(hue, column, row, contrastRequirement);
-          previousInitialBoundary = firstCheck;
         }
 
         if (accessibilityPath1Found == false) {
