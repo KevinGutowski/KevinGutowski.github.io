@@ -14,8 +14,7 @@ var currentColor = initialColor;
 var currentTextColor = white;
 var currentContrastRequirement = 4.5;
 var showCloseColorsChecked = true;
-var accessibilityArray1 = new Array(100);
-var accessibilityArray2 = new Array(100);
+var accessibilityArray1, accessibilityArray2;
 
 function accessibleColors() {
 
@@ -49,6 +48,8 @@ function accessibleColors() {
 
   // generate accessibility curve(s)
   function getAccessibilityCurves(hue, contrastRequirement) {
+    accessibilityArray1 = new Array(100);
+    accessibilityArray2 = new Array(100);
     var accessibilityPath1 = "M";
     var accessibilityPath2 = "M";
     var firstCheck; // store the first point in each row (true or false)
@@ -65,7 +66,7 @@ function accessibleColors() {
             var scaledRow = (100 - row) * 2;
             var scaledColumn = column * 2;
             accessibilityPath1 = accessibilityPath1 + " " + scaledColumn + " " + scaledRow;
-            accessibilityArray1[column] = scaledRow;
+            accessibilityArray1[column] = row;
             accessibilityPath1Found = true;
           }
         }
@@ -75,7 +76,7 @@ function accessibleColors() {
             var scaledRow = (100 - row) * 2;
             var scaledColumn = column * 2;
             accessibilityPath2 = accessibilityPath2 + " " + scaledColumn + " " + scaledRow;
-            accessibilityArray2[column] = scaledRow;
+            accessibilityArray2[column] = row;
             break;
           }
         }
