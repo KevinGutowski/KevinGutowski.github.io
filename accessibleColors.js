@@ -89,93 +89,124 @@ function accessibleColors() {
   }
 
   function getClosestSatCirclePosition(currentColor, contrastRequirement) {
-    var position, firstCheck;
+    var position;
     var foundBoundaryInRow = false;
-    for (var row = 0; row <= 100; row++) {
-      if (row == 0) {
-        firstCheck = checkColorContrast(currentColor.h, currentColor.s, row, contrastRequirement);
-      }
-
-      if (checkColorContrast(currentColor.h, currentColor.s, row, contrastRequirement) != firstCheck) {
+    var foundBoundaryAbove = false;
+    var foundBoundaryBelow = false;
+    // TODO: First check if there are two accessibility curves
+    for (var i = 0; i < accessibilityArray1.length; i++) {
+      if (accessibilityArray1[i] == currentColor.v) {
         foundBoundaryInRow = true;
-        var scaledRow = (100 - row) * 2;
-        var scaledColumn = currentColor.s * 2;
         position = {
-            x: scaledColumn,
-            y: scaledRow
+          x: i,
+          y: currentColor.v
         }
         break;
       }
     }
 
     if (foundBoundaryInRow == false) {
-      // check columns behind current color
-      // Don't need to start checking the currentColor column but rather currentColor column - 1 becuase we already checked the currentColor colummn above
-      for (var column = 100; column >= 0; column--) {
-        if (checkColorContrast(currentColor.h, column, 100, contrastRequirement) != firstCheck) {
-          foundBoundaryInRow = true;
-          var scaledRow = (100 - 100) * 2;
-          var scaledColumn = column * 2;
-          position = {
-            x: scaledColumn,
-            y: scaledRow // minus 2 to position it better on the line?
+      var breakCheck = false;
+      for (var row = currentColor.v + 1; row <= 100; row++) {
+        for (var i=0; i < accessibilityArray1.length; i++) {
+          if (accessibilityArray1[i] == row) {
+            foundBoundaryAbove = true;
+            position = {
+              x: i,
+              y: row
+            }
+            breakCheck = true;
+            break;
           }
-          break;
         }
+        if (breakCheck) {break;}
       }
     }
+
+    if (foundBoundaryAbove == false) {
+      var breakCheck = false;
+      for (var row = currentColor.v - 1; row >= 0; row--) {
+        for (var i=0; i < accessibilityArray1.length; i++) {
+          if (accessibilityArray1[i] == row) {
+            foundBoundaryBelow = true;
+
+            position = {
+              x: i,
+              y: row
+            }
+            breakCheck = true;
+            break;
+          }
+        }
+        if (breakCheck) {break;}
+      }
+    }
+
+    // TODO: Does there exist a closest saturation? If not, handle the error
+
+    var scaledRow = (100 - position.y) * 2;
+    var scaledColumn = position.x * 2;
+
+    position = {
+      x: scaledColumn,
+      y: scaledRow
+    }
+
     return position;
   }
 
-  function getClosestBrightCirclePosition(currentColor,contrastRequirement) {
-    var position, firstCheck;
+  function getClosestBrightCirclePosition(currentColor) {
+    var position;
     var foundBoundaryInColumn = false;
-    for (var column = 0; column <= 100; column++) {
-      if (column == 0) {
-        firstCheck = checkColorContrast(currentColor.h, column, currentColor.v, contrastRequirement);
-      }
 
-      if (checkColorContrast(currentColor.h, column, currentColor.v, contrastRequirement) != firstCheck) {
-        foundBoundaryInColumn = true;
-        var scaledRow = (100 - currentColor.v) * 2;
-        var scaledColumn = column * 2;
-        position = {
-          x: scaledColumn,
-          y: scaledRow - 2
-        }
-        break;
+    // TODO: First check if there are two accessibility curves
+    if (accessibilityArray1[currentColor.s]) {
+      foundBoundaryInColumn = true;
+      position = {
+        x: currentColor.s,
+        y: accessibilityArray1[currentColor.s]
       }
-    }
-
-    if (foundBoundaryInColumn == false) {
-      for (var row = 100; row >= 0; row--) {
-        if (checkColorContrast(currentColor.h, 100, row, contrastRequirement) != firstCheck) {
-          foundBoundaryInColumn = true;
-          var scaledRow = (100 - row) * 2;
-          var scaledColumn = 100 * 2;
+    } else {
+      var foundToTheRight = false;
+      for (var column = currentColor.s + 1; column <= 100; column++) {
+        if (accessibilityArray1[column]) {
+          foundToTheRight = true;
           position = {
-            x: scaledColumn,
-            y: scaledRow - 2,
+            x: column,
+            y: accessibilityArray1[column]
           }
+          // be sure not to search through the whole array but only the first found
           break;
         }
       }
-    }
 
-    if (foundBoundaryInColumn == false) {
-      for (var row = 0; row <= 100; row++) {
-        if (checkColorContrast(currentColor.h, 0, row, contrastRequirement) != firstCheck) {
-          foundBoundaryInColumn = true;
-          var scaledRow = (100 - row) * 2;
-          var scaledColumn = 0 * 2;
-          position = {
-            x: scaledColumn,
-            y: scaledRow - 2,
+      var foundToTheLeft = false;
+      if (foundToTheRight == false) {
+        for (var column = currentColor.s - 1; column >= 0; column--) {
+          if (accessibilityArray1[column]) {
+            foundToTheLeft = true;
+            position = {
+              x: column,
+              y: accessibilityArray1[column]
+            }
+            // be sure not to search through the whole array but only the first found
+            break;
           }
-          break;
         }
       }
+
+
+      // TODO: Does there exist a closest brightness? If not, handle the error
     }
+
+    var scaledRow = (100 - position.y) * 2;
+    var scaledColumn = position.x * 2;
+
+    position = {
+      x: scaledColumn,
+      y: scaledRow
+    }
+
     return position;
   }
 
@@ -279,6 +310,7 @@ function accessibleColors() {
     .attr('stroke-width', 2);
 
     // If showCloseColors is checked
+    // TODO: change two support two sets of circles
   if (showCloseColorsChecked) {
     satBrightSpaceSVG.append('circle')
     .attr('fill', 'black')
@@ -411,9 +443,7 @@ function accessibleColors() {
 
   function updateAccessibilityPath(hue, contrastRequirement) {
     d3.select('#accessibilityPath1').attr('d', getAccessibilityCurves(hue, contrastRequirement)[0]);
-    console.log(accessibilityArray1);
     d3.select('#accessibilityPath2').attr('d', getAccessibilityCurves(hue, contrastRequirement)[1]);
-    console.log(accessibilityArray2);
   }
 
   function updateSatBrightSpace(hue) {
