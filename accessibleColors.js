@@ -1,7 +1,7 @@
 var initialColor = {
-    h:54,
-    s:39,
-    v:88
+    h:175,
+    s:65,
+    v:57
 }
 
 var white = {
@@ -15,6 +15,7 @@ var currentTextColor = white;
 var currentContrastRequirement = 4.5;
 var showCloseColorsChecked = true;
 var accessibilityArray1, accessibilityArray2;
+var foundSecondPath; //gobal var to check if there are two lines
 
 function accessibleColors() {
 
@@ -82,77 +83,91 @@ function accessibleColors() {
         }
       }
     }
+
+    foundSecondPath = false;
+    if (accessibilityArray2[0] && accessibilityArray1[0]) {
+      foundSecondPath = true;
+    }
     return [accessibilityPath1, accessibilityPath2];
   }
 
-  function getClosestColors(currentColor, contrastRequirement) {
-  }
-
-  function getClosestSatCirclePosition(currentColor, contrastRequirement) {
+  function getClosestSatCirclePosition(currentColor) {
     var position;
     var foundBoundaryInRow = false;
     var foundBoundaryAbove = false;
     var foundBoundaryBelow = false;
     // TODO: First check if there are two accessibility curves
-    for (var i = 0; i < accessibilityArray1.length; i++) {
-      if (accessibilityArray1[i] == currentColor.v) {
-        foundBoundaryInRow = true;
-        position = {
-          x: i,
-          y: currentColor.v
-        }
-        break;
-      }
-    }
 
-    if (foundBoundaryInRow == false) {
-      var breakCheck = false;
-      for (var row = currentColor.v + 1; row <= 100; row++) {
-        for (var i=0; i < accessibilityArray1.length; i++) {
-          if (accessibilityArray1[i] == row) {
-            foundBoundaryAbove = true;
-            position = {
-              x: i,
-              y: row
-            }
-            breakCheck = true;
-            break;
+    function getPositionFromAccessibilityArray(accessibilityArray) {
+      for (var i = 0; i < accessibilityArray.length; i++) {
+        if (accessibilityArray[i] == currentColor.v) {
+          foundBoundaryInRow = true;
+          position = {
+            x: i,
+            y: currentColor.v
           }
+          break;
         }
-        if (breakCheck) {break;}
       }
-    }
 
-    if (foundBoundaryAbove == false) {
-      var breakCheck = false;
-      for (var row = currentColor.v - 1; row >= 0; row--) {
-        for (var i=0; i < accessibilityArray1.length; i++) {
-          if (accessibilityArray1[i] == row) {
-            foundBoundaryBelow = true;
-
-            position = {
-              x: i,
-              y: row
+      if (foundBoundaryInRow == false) {
+        var breakCheck = false;
+        for (var row = currentColor.v + 1; row <= 100; row++) {
+          for (var i=0; i < accessibilityArray.length; i++) {
+            if (accessibilityArray[i] == row) {
+              foundBoundaryAbove = true;
+              position = {
+                x: i,
+                y: row
+              }
+              breakCheck = true;
+              break;
             }
-            breakCheck = true;
-            break;
           }
+          if (breakCheck) {break;}
         }
-        if (breakCheck) {break;}
       }
+
+      if (foundBoundaryAbove == false) {
+        var breakCheck = false;
+        for (var row = currentColor.v - 1; row >= 0; row--) {
+          for (var i=0; i < accessibilityArray.length; i++) {
+            if (accessibilityArray[i] == row) {
+              foundBoundaryBelow = true;
+
+              position = {
+                x: i,
+                y: row
+              }
+              breakCheck = true;
+              break;
+            }
+          }
+          if (breakCheck) {break;}
+        }
+      }
+
+      // TODO: Does there exist a closest saturation? If not, handle the error
+
+      var scaledRow = (100 - position.y) * 2;
+      var scaledColumn = position.x * 2;
+
+      position = {
+        x: scaledColumn,
+        y: scaledRow
+      }
+
+      return position;
     }
 
-    // TODO: Does there exist a closest saturation? If not, handle the error
-
-    var scaledRow = (100 - position.y) * 2;
-    var scaledColumn = position.x * 2;
-
-    position = {
-      x: scaledColumn,
-      y: scaledRow
+    var positionsOrPosition;
+    if (foundSecondPath) {
+      positionsOrPosition = [getPositionFromAccessibilityArray(accessibilityArray1), getPositionFromAccessibilityArray(accessibilityArray2)];
+    } else {
+      positionsOrPosition = [getPositionFromAccessibilityArray(accessibilityArray1)]
     }
 
-    return position;
+    return positionsOrPosition;
   }
 
   function getClosestBrightCirclePosition(currentColor) {
@@ -208,6 +223,10 @@ function accessibleColors() {
     }
 
     return position;
+  }
+
+  function getClosestColors(currentColor, contrastRequirement) {
+
   }
 
   // canvas start
@@ -312,13 +331,16 @@ function accessibleColors() {
     // If showCloseColors is checked
     // TODO: change two support two sets of circles
   if (showCloseColorsChecked) {
-    satBrightSpaceSVG.append('circle')
-    .attr('fill', 'black')
-    .attr('stroke', 'none')
-    .attr('id', 'closestSatCircle')
-    .attr('cx', getClosestSatCirclePosition(currentColor,currentContrastRequirement).x)
-    .attr('cy', getClosestSatCirclePosition(currentColor,currentContrastRequirement).y)
-    .attr('r', 5);
+    var satCirclePositionData = getClosestSatCirclePosition(currentColor, currentContrastRequirement);
+    satBrightSpaceSVG.selectAll(".closestSatCircle circle")
+        .data(satCirclePositionData)
+      .enter().append("circle")
+        .attr('fill', 'black')
+        .attr('stroke', 'none')
+        .attr('id', function(d,i) { return "closestSatCircle" + (i + 1)})
+        .attr('cx', function(d) { return d.x})
+        .attr('cy', function(d) { return d.y})
+        .attr('r', 5);
 
     satBrightSpaceSVG.append('circle')
     .attr('fill', 'black')
@@ -458,9 +480,9 @@ function accessibleColors() {
   }
 
   function updateCloseSaturationColor(currentColor, currentContrastRequirement) {
-    d3.select('#closestSatCircle')
-      .attr('cx', getClosestSatCirclePosition(currentColor,currentContrastRequirement).x)
-      .attr('cy', getClosestSatCirclePosition(currentColor,currentContrastRequirement).y);
+    d3.select('#closestSatCircle1')
+      .attr('cx', getClosestSatCirclePosition(currentColor,currentContrastRequirement)[0].x)
+      .attr('cy', getClosestSatCirclePosition(currentColor,currentContrastRequirement)[0].y);
   }
 
   function updateCloseBrightnessColor(currentColor, currentContrastRequirement) {
