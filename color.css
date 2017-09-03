@@ -131,3 +131,12 @@ form {
 #closestColorsContainer .formTitle {
     margin-top: 8px;
 }
+
+#renderClosestAccessibileColors1 {
+    display: flex;
+}
+
+#renderClosestAccessibileColors2 {
+    display: flex;
+}
+

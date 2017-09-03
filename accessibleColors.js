@@ -1,20 +1,20 @@
 var initialColor = {
-  h: 172,
+  h: 285,
   s: 65,
   v: 57
 }
 
 var white = {
-  h: 0,
-  s: 0,
-  v: 100
+  h: 62,
+  s: 89,
+  v: 43
 }
 
 var currentColor = initialColor;
 var currentTextColor = white;
 var showCloseColorsChecked = true;
 var accessibilityArray1, accessibilityArray2;
-var currentContrastRequirement = 4.5;
+var currentContrastRequirement = 3.0;
 var numberOfAccessibilityPaths = 1;
 
 function accessibleColors() {
@@ -198,8 +198,6 @@ function accessibleColors() {
         x: scaledColumn,
         y: scaledRow
       }
-
-      console.log(position);
 
       return position;
     }
@@ -433,6 +431,7 @@ function accessibleColors() {
     if (showCloseColorsChecked) {
       updateCloseSaturationColor(currentColor, currentContrastRequirement);
       updateCloseBrightnessColor(currentColor, currentContrastRequirement);
+      updateRenderClosestColors(currentColor, currentContrastRequirement);
     }
   }
 
@@ -490,46 +489,204 @@ function accessibleColors() {
   }
 
   function updateCloseSaturationColor(currentColor, currentContrastRequirement) {
-    d3.select('#closestSatCircle1')
-      .attr('cx', getClosestSatCirclePosition(currentColor,currentContrastRequirement)[0].x)
-      .attr('cy', getClosestSatCirclePosition(currentColor,currentContrastRequirement)[0].y);
+
+    // Data Join
+    var closestSatCircles = satBrightSpaceSVG.selectAll('.closestSatCircle').data(getClosestSatCirclePosition(currentColor,currentContrastRequirement));
+
+    // Update
+    closestSatCircles.attr('cx', function(d) {return d.x})
+      .attr('cy', function(d) {return d.y});
+
+    // Enter
+    closestSatCircles.enter().append('circle')
+      .attr('fill', 'black')
+      .attr('stroke', 'none')
+      .attr('id', function(d,i) { return "closestSatCircle" + (i + 1)})
+      .attr('class', 'closestSatCircle')
+      .attr('cx', function(d) { return d.x})
+      .attr('cy', function(d) { return d.y})
+      .attr('r', 5);
+
+    // Exit
+    closestSatCircles.exit().remove();
   }
 
   function updateCloseBrightnessColor(currentColor, currentContrastRequirement) {
-    d3.select('#closestBrightCircle')
-      .attr('cx', getClosestBrightCirclePosition(currentColor,currentContrastRequirement).x)
-      .attr('cy', getClosestBrightCirclePosition(currentColor,currentContrastRequirement).y);
+
+    // Data Join
+    var closestBrightCircles = satBrightSpaceSVG.selectAll('.closestBrightCircle').data(getClosestBrightCirclePosition(currentColor,currentContrastRequirement));
+
+    // Update
+    closestBrightCircles.attr('cx', function(d) {return d.x})
+      .attr('cy', function(d) {return d.y});
+
+    // Enter
+    closestBrightCircles.enter().append('circle')
+      .attr('fill', 'black')
+      .attr('stroke', 'none')
+      .attr('id', function(d,i) { return "closestBrightCircle" + (i + 1)})
+      .attr('class', 'closestBrightCircle')
+      .attr('cx', function(d) { return d.x})
+      .attr('cy', function(d) { return d.y})
+      .attr('r', 5);
+
+    // Exit
+    closestBrightCircles.exit().remove();
+
+  }
+
+  function updateRenderClosestColors(currentColor, contrastRequirement) {
+    var brightnessArray = getClosestBrightCirclePosition(currentColor,currentContrastRequirement);
+    var saturationArray = getClosestSatCirclePosition(currentColor,currentContrastRequirement);
+    var brightness1X = Math.floor(brightnessArray[0].x / 2);
+    var saturation1X = Math.floor(saturationArray[0].x / 2);
+    var isBrightnessLarger1;
+
+    console.log(accessibilityArray1);
+
+    if (brightness1X > saturation1X) {
+      var closestColorsArray1 = accessibilityArray1.slice(saturation1X, brightness1X + 1);
+      isBrightnessLarger1 = true;
+    } else {
+      var closestColorsArray1 = accessibilityArray1.slice(brightness1X, saturation1X + 1);
+      isBrightnessLarger1 = false;
+    }
+
+    console.log(saturation1X, brightness1X);
+    console.log(closestColorsArray1);
+
+    var isBrightnessLarger2;
+    if ((brightnessArray.length == 2) && (saturationArray.length == 2)) {
+      d3.select('#renderClosestAccessibileColors2').style('display', 'flex');
+
+      var brightness2X = Math.floor(getClosestBrightCirclePosition(currentColor,currentContrastRequirement)[1].x / 2);
+      var saturation2X = Math.floor(getClosestSatCirclePosition(currentColor, currentContrastRequirement)[1].x / 2);
+
+      if (brightness2X > saturation2X) {
+        var closestColorsArray2 = accessibilityArray2.slice(saturation2X,brightness2X + 1);
+        isBrightnessLarger2 = true;
+      } else {
+        var closestColorsArray2 = accessibilityArray2.slice(brightness2X,saturation2X + 1);
+        isBrightnessLarger2 = false;
+      }
+    } else {
+      d3.select('#renderClosestAccessibileColors2').style('display', 'none');
+    }
+
+    var renderClosestAccessibileColors1 = d3.select('#renderClosestAccessibileColors1').selectAll('.closestsColors1').data(closestColorsArray1);
+
+    renderClosestAccessibileColors1.style("background-color", function(d, i) {
+      if (isBrightnessLarger1) {
+        var indexStart = brightness1X;
+      } else {
+        var indexStart = saturation1X;
+      }
+      var tempHSV = {
+        h: currentColor.h,
+        s: indexStart + i,
+        v: d
+      }
+      var tempRGBnorm = HSVtoRGB(normHSV(tempHSV));
+      var tempRGB = {
+        r: Math.floor(tempRGBnorm.r * 255),
+        g: Math.floor(tempRGBnorm.g * 255),
+        b: Math.floor(tempRGBnorm.b * 255)
+      }
+      return "rgb(" + tempRGB.r + "," + tempRGB.g + "," + tempRGB.b + ")"});
+
+    renderClosestAccessibileColors1.enter().append('div')
+      .attr('class','closestsColors1')
+      .style('height', '20px')
+      .style('width', '100%')
+      .style('background-color', function (d,i) {
+        var tempHSV = {
+          h: currentColor.h,
+          s: brightness1X + i,
+          v: d
+        }
+        var tempRGBnorm = HSVtoRGB(normHSV(tempHSV));
+        var tempRGB = {
+          r: Math.floor(tempRGBnorm.r * 255),
+          g: Math.floor(tempRGBnorm.g * 255),
+          b: Math.floor(tempRGBnorm.b * 255)
+        }
+      return "rgb(" + tempRGB.r + "," + tempRGB.g + "," + tempRGB.b + ")"
+      });
+
+      renderClosestAccessibileColors1.exit().remove();
+
+      var renderClosestAccessibileColors2 = d3.select('#renderClosestAccessibileColors2').selectAll('.closestsColors2').data(closestColorsArray2);
+
+      renderClosestAccessibileColors2.style("background-color", function(d, i) {
+        if (isBrightnessLarger2) {
+          var indexStart = brightness2X;
+        } else {
+          var indexStart = saturation2X;
+        }
+        var tempHSV = {
+          h: currentColor.h,
+          s: indexStart + i,
+          v: d
+        }
+        var tempRGBnorm = HSVtoRGB(normHSV(tempHSV));
+        var tempRGB = {
+          r: Math.floor(tempRGBnorm.r * 255),
+          g: Math.floor(tempRGBnorm.g * 255),
+          b: Math.floor(tempRGBnorm.b * 255)
+        }
+        return "rgb(" + tempRGB.r + "," + tempRGB.g + "," + tempRGB.b + ")"});
+
+      renderClosestAccessibileColors2.enter().append('div')
+      .attr('class','closestsColors2')
+      .style('height', '20px')
+      .style('width', '100%')
+      .style('background-color', function (d,i) {
+        var tempHSV = {
+          h: currentColor.h,
+          s: brightness2X + i,
+          v: d
+        }
+        var tempRGBnorm = HSVtoRGB(normHSV(tempHSV));
+        var tempRGB = {
+          r: Math.floor(tempRGBnorm.r * 255),
+          g: Math.floor(tempRGBnorm.g * 255),
+          b: Math.floor(tempRGBnorm.b * 255)
+        }
+      return "rgb(" + tempRGB.r + "," + tempRGB.g + "," + tempRGB.b + ")"
+      });
+
+      renderClosestAccessibileColors2.exit().remove();
   }
 
   // MARK: Interaction Handlers
   d3.select('#hueInput').on('input', function() {
     currentColor.h = this.value;
-    update(currentColor, currentTextColor);
+    update(currentColor, currentTextColor, currentContrastRequirement);
   });
 
   d3.select('#satInput').on('input', function() {
     currentColor.s = this.value;
-    update(currentColor, currentTextColor);
+    update(currentColor, currentTextColor, currentContrastRequirement);
   });
 
   d3.select('#brightInput').on('input', function() {
     currentColor.v = this.value;
-    update(currentColor, currentTextColor);
+    update(currentColor, currentTextColor, currentContrastRequirement);
   });
 
   d3.select('#textHueInput').on('input', function() {
     currentTextColor.h = this.value;
-    update(currentColor, currentTextColor);
+    update(currentColor, currentTextColor, currentContrastRequirement);
   });
 
   d3.select('#textSatInput').on('input', function() {
     currentTextColor.s = this.value;
-    update(currentColor, currentTextColor);
+    update(currentColor, currentTextColor, currentContrastRequirement);
   });
 
   d3.select('#textBrightInput').on('input', function() {
     currentTextColor.v = this.value;
-    update(currentColor, currentTextColor);
+    update(currentColor, currentTextColor, currentContrastRequirement);
   });
 
   d3.selectAll(("input[name='contrastValue']")).on("change", function(){
@@ -544,5 +701,7 @@ function accessibleColors() {
     } else {
       d3.select("#closestColorsContainer").attr('style', "display:inherit;")
     }
+
+    // TODO: Hide / show accessibility dots
   });
 }
