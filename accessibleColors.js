@@ -1,3 +1,4 @@
+// Double Line
 var initialColor = {
   h: 285,
   s: 65,
@@ -10,12 +11,43 @@ var white = {
   v: 43
 }
 
+// var initialColor = {
+//   h: 285,
+//   s: 0,
+//   v: 91
+// }
+
+// var white = {
+//   h: 0,
+//   s: 0,
+//   v: 100
+// }
+
 var currentColor = initialColor;
 var currentTextColor = white;
 var showCloseColorsChecked = true;
 var accessibilityArray1, accessibilityArray2;
 var currentContrastRequirement = 3.0;
 var numberOfAccessibilityPaths = 1;
+var currentlySelectedColor, renderedColor, renderedColorText;
+var currentColorPosition;
+
+var closestBrightCirclePosition1 = {
+  x: 0,
+  y: 0
+}
+var closestBrightCirclePosition2  = {
+  x: 0,
+  y: 0
+}
+var closestSatCirclePosition1  = {
+  x: 0,
+  y: 0
+}
+var closestSatCirclePosition2  = {
+  x: 0,
+  y: 0
+}
 
 function accessibleColors() {
   // Canvas start for Colors Space
@@ -352,7 +384,15 @@ function accessibleColors() {
 
   // Create the saturation & brightness selector
   satBrightSpaceSVG.append('circle')
-    .attr('fill', 'none')
+    .attr('fill', function() {
+      var tempRGBnorm = HSVtoRGB(normHSV(currentColor));
+      var tempRGB = {
+        r: Math.floor(tempRGBnorm.r * 255),
+        g: Math.floor(tempRGBnorm.g * 255),
+        b: Math.floor(tempRGBnorm.b * 255)
+      }
+      return ('rgb(' + tempRGB.r + "," + tempRGB.g + ',' + tempRGB.b + ')');
+    })
     .attr('stroke', 'white')
     .attr('id', 'currentColorCircle')
     .attr('cx', currentColor.s*2)
@@ -431,7 +471,9 @@ function accessibleColors() {
     if (showCloseColorsChecked) {
       updateCloseSaturationColor(currentColor, currentContrastRequirement);
       updateCloseBrightnessColor(currentColor, currentContrastRequirement);
+      updateCloseColorLines();
       updateRenderClosestColors(currentColor, currentContrastRequirement);
+      updateCurrentlySelectedColor();
     }
   }
 
@@ -483,9 +525,22 @@ function accessibleColors() {
   }
 
   function updateCurrentColorCircle(currentColor) {
+    currentColorPosition = {
+      x: currentColor.s*2,
+      y: 200 - (currentColor.v * 2)
+    }
     d3.select('#currentColorCircle')
-      .attr('cx', currentColor.s*2)
-      .attr('cy', 200 - (currentColor.v*2))
+      .attr('cx', currentColorPosition.x)
+      .attr('cy', currentColorPosition.y)
+      .attr('fill', function() {
+        var tempRGBnorm = HSVtoRGB(normHSV(currentColor));
+        var tempRGB = {
+          r: Math.floor(tempRGBnorm.r * 255),
+          g: Math.floor(tempRGBnorm.g * 255),
+          b: Math.floor(tempRGBnorm.b * 255)
+        }
+        return ('rgb(' + tempRGB.r + "," + tempRGB.g + ',' + tempRGB.b + ')');
+      });
   }
 
   function updateCloseSaturationColor(currentColor, currentContrastRequirement) {
@@ -494,8 +549,23 @@ function accessibleColors() {
     var closestSatCircles = satBrightSpaceSVG.selectAll('.closestSatCircle').data(getClosestSatCirclePosition(currentColor,currentContrastRequirement));
 
     // Update
-    closestSatCircles.attr('cx', function(d) {return d.x})
-      .attr('cy', function(d) {return d.y});
+    closestSatCircles
+      .attr('cx', function(d,i) {
+        if (i == 0) {
+          closestSatCirclePosition1.x = d.x;
+        } else {
+          closestSatCirclePosition2.x = d.x;
+        }
+        return d.x;
+      })
+      .attr('cy', function(d,i) {
+        if (i == 0) {
+          closestSatCirclePosition1.y = d.y;
+        } else {
+          closestSatCirclePosition2.y = d.y;
+        }
+        return d.y;
+      });
 
     // Enter
     closestSatCircles.enter().append('circle')
@@ -503,8 +573,22 @@ function accessibleColors() {
       .attr('stroke', 'none')
       .attr('id', function(d,i) { return "closestSatCircle" + (i + 1)})
       .attr('class', 'closestSatCircle')
-      .attr('cx', function(d) { return d.x})
-      .attr('cy', function(d) { return d.y})
+      .attr('cx', function(d,i) {
+        if (i == 0) {
+          closestSatCirclePosition1.x = d.x;
+        } else {
+          closestSatCirclePosition2.x = d.x;
+        }
+        return d.x;
+      })
+      .attr('cy', function(d,i) {
+        if (i == 0) {
+          closestSatCirclePosition1.y = d.y;
+        } else {
+          closestSatCirclePosition2.y = d.y;
+        }
+        return d.y;
+      })
       .attr('r', 5);
 
     // Exit
@@ -517,8 +601,23 @@ function accessibleColors() {
     var closestBrightCircles = satBrightSpaceSVG.selectAll('.closestBrightCircle').data(getClosestBrightCirclePosition(currentColor,currentContrastRequirement));
 
     // Update
-    closestBrightCircles.attr('cx', function(d) {return d.x})
-      .attr('cy', function(d) {return d.y});
+    closestBrightCircles
+      .attr('cx', function(d,i) {
+        if (i == 0) {
+          closestBrightCirclePosition1.x = d.x;
+        } else {
+          closestBrightCirclePosition2.x = d.x;
+        }
+        return d.x;
+      })
+      .attr('cy', function(d,i) {
+        if (i == 0) {
+          closestBrightCirclePosition1.y = d.y;
+        } else {
+          closestBrightCirclePosition2.y = d.y;
+        }
+        return d.y;
+      });
 
     // Enter
     closestBrightCircles.enter().append('circle')
@@ -526,23 +625,98 @@ function accessibleColors() {
       .attr('stroke', 'none')
       .attr('id', function(d,i) { return "closestBrightCircle" + (i + 1)})
       .attr('class', 'closestBrightCircle')
-      .attr('cx', function(d) { return d.x})
-      .attr('cy', function(d) { return d.y})
+      .attr('cx', function(d,i) {
+        if (i == 0) {
+          closestBrightCirclePosition1.x = d.x;
+          console.log(closestBrightCirclePosition1.x);
+        } else {
+          closestBrightCirclePosition2.x = d.x;
+          console.log(closestBrightCirclePosition2.x);
+        }
+        return d.x;
+      })
+      .attr('cy', function(d,i) {
+        if (i == 0) {
+          closestBrightCirclePosition1.y = d.y;
+        } else {
+          closestBrightCirclePosition2.y = d.y;
+        }
+        return d.y;
+      })
       .attr('r', 5);
+
+    console.log(closestBrightCirclePosition1, closestBrightCirclePosition2)
 
     // Exit
     closestBrightCircles.exit().remove();
 
   }
 
+  function updateCloseColorLines() {
+    var line1Sat = {
+      x1: closestSatCirclePosition1.x,
+      y1: closestSatCirclePosition1.y,
+      x2: currentColorPosition.x,
+      y2: currentColorPosition.y
+    };
+    var line2Bright = {
+      x1: closestBrightCirclePosition1.x,
+      y1: closestBrightCirclePosition1.y,
+      x2: currentColorPosition.x,
+      y2: currentColorPosition.y
+    }
+
+    var line3Sat = {
+      x1: closestSatCirclePosition2.x,
+      y1: closestSatCirclePosition2.y,
+      x2: currentColorPosition.x,
+      y2: currentColorPosition.y
+    }
+
+    var line4Bright = {
+      x1: closestBrightCirclePosition2.x,
+      y1: closestBrightCirclePosition2.y,
+      x2: currentColorPosition.x,
+      y2: currentColorPosition.y
+    }
+
+    if (numberOfAccessibilityPaths == 2) {
+      var lineArray = [line1Sat,line2Bright,line3Sat,line4Bright];
+    } else {
+      var lineArray = [line1Sat, line2Bright];
+    }
+
+    // Data Bind
+    var closestColorLines = satBrightSpaceSVG.selectAll('.closestColorLine').data(lineArray);
+
+    // Update
+    closestColorLines
+      .attr('x1', function(d) { return d.x1 })
+      .attr('y1', function(d) { return d.y1 })
+      .attr('x2', function(d) { return d.x2 })
+      .attr('y2', function(d) { return d.y2 })
+
+    // Enter
+    closestColorLines.enter().insert('line', ':first-child')
+      .attr('x1', function(d) { return d.x1 })
+      .attr('y1', function(d) { return d.y1 })
+      .attr('x2', function(d) { return d.x2 })
+      .attr('y2', function(d) { return d.y2 })
+      .attr('stroke', 'black')
+      .attr('class', 'closestColorLine')
+
+    // Exit
+    closestColorLines.exit().remove();
+  }
+
   function updateRenderClosestColors(currentColor, contrastRequirement) {
+    d3.select('#renderClosestAccessibileColors1').selectAll('.closestsColors1').classed('selected', false).classed('notActive', false);
+
     var brightnessArray = getClosestBrightCirclePosition(currentColor,currentContrastRequirement);
     var saturationArray = getClosestSatCirclePosition(currentColor,currentContrastRequirement);
     var brightness1X = Math.floor(brightnessArray[0].x / 2);
     var saturation1X = Math.floor(saturationArray[0].x / 2);
     var isBrightnessLarger1;
-
-    console.log(accessibilityArray1);
 
     if (brightness1X > saturation1X) {
       var closestColorsArray1 = accessibilityArray1.slice(saturation1X, brightness1X + 1);
@@ -551,9 +725,6 @@ function accessibleColors() {
       var closestColorsArray1 = accessibilityArray1.slice(brightness1X, saturation1X + 1);
       isBrightnessLarger1 = false;
     }
-
-    console.log(saturation1X, brightness1X);
-    console.log(closestColorsArray1);
 
     var isBrightnessLarger2;
     if ((brightnessArray.length == 2) && (saturationArray.length == 2)) {
@@ -575,87 +746,176 @@ function accessibleColors() {
 
     var renderClosestAccessibileColors1 = d3.select('#renderClosestAccessibileColors1').selectAll('.closestsColors1').data(closestColorsArray1);
 
-    renderClosestAccessibileColors1.style("background-color", function(d, i) {
-      if (isBrightnessLarger1) {
-        var indexStart = brightness1X;
-      } else {
-        var indexStart = saturation1X;
-      }
-      var tempHSV = {
-        h: currentColor.h,
-        s: indexStart + i,
-        v: d
-      }
-      var tempRGBnorm = HSVtoRGB(normHSV(tempHSV));
-      var tempRGB = {
-        r: Math.floor(tempRGBnorm.r * 255),
-        g: Math.floor(tempRGBnorm.g * 255),
-        b: Math.floor(tempRGBnorm.b * 255)
-      }
-      return "rgb(" + tempRGB.r + "," + tempRGB.g + "," + tempRGB.b + ")"});
+    var middleOfLength = Math.floor(closestColorsArray1.length / 2)
 
-    renderClosestAccessibileColors1.enter().append('div')
-      .attr('class','closestsColors1')
-      .style('height', '20px')
-      .style('width', '100%')
+    if (isBrightnessLarger1) {
+      var indexStart1 = saturation1X;
+    } else {
+      var indexStart1 = brightness1X;
+    }
+
+    // REMOVE
+    renderClosestAccessibileColors1.exit().remove();
+
+    // UPDATE
+    renderClosestAccessibileColors1
+      .attr('data-hsv', function (d,i) {
+          var tempHSV = {
+            h: currentColor.h,
+            s: indexStart1 + i,
+            v: d
+          }
+        return (tempHSV.h + ", " + tempHSV.s + ', ' + tempHSV.v)
+        })
       .style('background-color', function (d,i) {
-        var tempHSV = {
-          h: currentColor.h,
-          s: brightness1X + i,
-          v: d
-        }
-        var tempRGBnorm = HSVtoRGB(normHSV(tempHSV));
-        var tempRGB = {
-          r: Math.floor(tempRGBnorm.r * 255),
-          g: Math.floor(tempRGBnorm.g * 255),
-          b: Math.floor(tempRGBnorm.b * 255)
-        }
-      return "rgb(" + tempRGB.r + "," + tempRGB.g + "," + tempRGB.b + ")"
-      });
+          var tempHSV = {
+            h: currentColor.h,
+            s: indexStart1 + i,
+            v: d
+          }
+          var tempRGBnorm = HSVtoRGB(normHSV(tempHSV));
+          var tempRGB = {
+            r: Math.floor(tempRGBnorm.r * 255),
+            g: Math.floor(tempRGBnorm.g * 255),
+            b: Math.floor(tempRGBnorm.b * 255)
+          }
+        return "rgb(" + tempRGB.r + "," + tempRGB.g + "," + tempRGB.b + ")"
+        });
 
-      renderClosestAccessibileColors1.exit().remove();
+    // ENTER
+    renderClosestAccessibileColors1.enter().append('div')
+        .style('height', '20px')
+        .style('width', '100%')
+        .attr('class', 'closestsColors1')
+        .attr('data-hsv', function (d,i) {
+          var tempHSV = {
+            h: currentColor.h,
+            s: indexStart1 + i,
+            v: d
+          }
+        return (tempHSV.h + ", " + tempHSV.s + ', ' + tempHSV.v)
+        })
+        .style('background-color', function (d,i) {
+          var tempHSV = {
+            h: currentColor.h,
+            s: indexStart1 + i,
+            v: d
+          }
+          var tempRGBnorm = HSVtoRGB(normHSV(tempHSV));
+          var tempRGB = {
+            r: Math.floor(tempRGBnorm.r * 255),
+            g: Math.floor(tempRGBnorm.g * 255),
+            b: Math.floor(tempRGBnorm.b * 255)
+          }
+        return "rgb(" + tempRGB.r + "," + tempRGB.g + "," + tempRGB.b + ")"
+        });
+
+
+
+      var closestColors1Nodes = document.querySelector('#renderClosestAccessibileColors1').getElementsByClassName('closestsColors1');
+
+      d3.selectAll(".selected").classed('.selected', false);
+      d3.select(closestColors1Nodes[middleOfLength]).attr('class', 'closestsColors1 selected notActive');
+
+      if (typeof closestColorsArray2 === "undefined") {
+        closestColorsArray2 = [];
+      }
+
+      if (isBrightnessLarger1) {
+        var indexStart2 = saturation2X;
+      } else {
+        var indexStart2 = brightness2X;
+      }
 
       var renderClosestAccessibileColors2 = d3.select('#renderClosestAccessibileColors2').selectAll('.closestsColors2').data(closestColorsArray2);
 
-      renderClosestAccessibileColors2.style("background-color", function(d, i) {
-        if (isBrightnessLarger2) {
-          var indexStart = brightness2X;
-        } else {
-          var indexStart = saturation2X;
-        }
-        var tempHSV = {
-          h: currentColor.h,
-          s: indexStart + i,
-          v: d
-        }
-        var tempRGBnorm = HSVtoRGB(normHSV(tempHSV));
-        var tempRGB = {
-          r: Math.floor(tempRGBnorm.r * 255),
-          g: Math.floor(tempRGBnorm.g * 255),
-          b: Math.floor(tempRGBnorm.b * 255)
-        }
-        return "rgb(" + tempRGB.r + "," + tempRGB.g + "," + tempRGB.b + ")"});
-
-      renderClosestAccessibileColors2.enter().append('div')
-      .attr('class','closestsColors2')
-      .style('height', '20px')
-      .style('width', '100%')
-      .style('background-color', function (d,i) {
-        var tempHSV = {
-          h: currentColor.h,
-          s: brightness2X + i,
-          v: d
-        }
-        var tempRGBnorm = HSVtoRGB(normHSV(tempHSV));
-        var tempRGB = {
-          r: Math.floor(tempRGBnorm.r * 255),
-          g: Math.floor(tempRGBnorm.g * 255),
-          b: Math.floor(tempRGBnorm.b * 255)
-        }
-      return "rgb(" + tempRGB.r + "," + tempRGB.g + "," + tempRGB.b + ")"
-      });
-
+      // REMOVE
       renderClosestAccessibileColors2.exit().remove();
+
+      // UPDATE
+      renderClosestAccessibileColors2
+        .attr('data-hsv', function (d,i) {
+          var tempHSV = {
+            h: currentColor.h,
+            s: indexStart2 + i,
+            v: d
+          }
+          return (tempHSV.h + ", " + tempHSV.s + ', ' + tempHSV.v)
+        })
+        .style('background-color', function (d,i) {
+          var tempHSV = {
+            h: currentColor.h,
+            s: indexStart2 + i,
+            v: d
+          }
+          var tempRGBnorm = HSVtoRGB(normHSV(tempHSV));
+          var tempRGB = {
+            r: Math.floor(tempRGBnorm.r * 255),
+            g: Math.floor(tempRGBnorm.g * 255),
+            b: Math.floor(tempRGBnorm.b * 255)
+          }
+        return "rgb(" + tempRGB.r + "," + tempRGB.g + "," + tempRGB.b + ")"
+        });
+
+      // ENTER
+      renderClosestAccessibileColors2.enter().append('div')
+        .attr('class','closestsColors2')
+        .attr('data-hsv', function (d,i) {
+          var tempHSV = {
+            h: currentColor.h,
+            s: indexStart2 + i,
+            v: d
+          }
+          return (tempHSV.h + ", " + tempHSV.s + ', ' + tempHSV.v)
+        })
+        .style('height', '20px')
+        .style('width', '100%')
+        .style('background-color', function (d,i) {
+          var tempHSV = {
+            h: currentColor.h,
+            s: indexStart2 + i,
+            v: d
+          }
+          var tempRGBnorm = HSVtoRGB(normHSV(tempHSV));
+          var tempRGB = {
+            r: Math.floor(tempRGBnorm.r * 255),
+            g: Math.floor(tempRGBnorm.g * 255),
+            b: Math.floor(tempRGBnorm.b * 255)
+          }
+        return "rgb(" + tempRGB.r + "," + tempRGB.g + "," + tempRGB.b + ")"
+        });
+
+
+  }
+
+  function updateCurrentlySelectedColor() {
+    currentlySelectedColor = d3.selectAll('.renderClosestAccessibileColors').select(".selected");
+    renderedColor = currentlySelectedColor;
+    renderedColor.datum(function() { renderedColorText = this.dataset.hsv; })
+    updateRenderedClosestColor(renderedColorText);
+
+    d3.selectAll(".renderClosestAccessibileColors").selectAll('div')
+    .on('click', function() {
+      d3.selectAll(".selected").classed('selected', false);
+      d3.select(this).classed('selected', true);
+      currentlySelectedColor = d3.select(this);
+    })
+    .on('mouseover', function(){
+      renderedColor = d3.select(this);
+      currentlySelectedColor.classed('notActive', false);
+      renderedColor.datum(function() { renderedColorText = this.dataset.hsv; })
+      updateRenderedClosestColor(renderedColorText);
+    })
+    .on('mouseout', function() {
+        renderedColor = currentlySelectedColor;
+        currentlySelectedColor.classed('notActive', true);
+        renderedColor.datum(function() { renderedText = this.dataset.hsv; })
+        updateRenderedClosestColor(renderedText);
+    });
+  }
+
+  function updateRenderedClosestColor(text) {
+    d3.select('#renderedClosestColor').text(text);
   }
 
   // MARK: Interaction Handlers
@@ -704,4 +964,5 @@ function accessibleColors() {
 
     // TODO: Hide / show accessibility dots
   });
+
 }

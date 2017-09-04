@@ -140,3 +140,24 @@ form {
     display: flex;
 }
 
+.renderClosestAccessibileColors div {
+    cursor: pointer;
+}
+
+.renderClosestAccessibileColors div.selected {
+    box-shadow: 0 0 0 1px white;
+    z-index: 2;
+    border-radius: 2px;
+}
+
+.renderClosestAccessibileColors div:hover {
+    box-shadow: 0 0 0 2px white;
+    z-index: 1;
+    border-radius: 2px;
+    min-width: 2px;
+}
+
+.renderClosestAccessibileColors div.notActive {
+    box-shadow: 0 0 0 2px white;
+}
+
