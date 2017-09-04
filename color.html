@@ -11,8 +11,8 @@
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
   <script type="text/javascript" src="color.js"></script>
   <script type="text/javascript" src="math.js"></script>
-  <!-- <script type="text/javascript" src="d3.js"></script> -->
-  <script src="https://d3js.org/d3.v4.js"></script>
+  <script type="text/javascript" src="d3.js"></script>
+<!--   <script src="https://d3js.org/d3.v4.js"></script> -->
   <script type="text/javascript" src="colorCurve.js"></script>
   <script type="text/javascript" src="accessibleColors.js"></script>
   <script type="text/javascript" src="onWindowLoad.js"></script>
@@ -68,19 +68,34 @@
                     Brightness
                     <input type="number" name="textBrightInput" min="0" max="100" inputmode="numeric" pattern="[0-9]*" id="textBrightInput" class="buttonColor">
                   </div>
+                  <div class="formTitle contrastRequirementTitle">CONTRAST REQUIREMENT</div>
+                  <form>
+                    <input type="radio" name="contrastValue" value='3.0'><label for="3.0">3:1</label>
+                    <input type="radio" name="contrastValue" value='4.5' checked='checked'><label for="4.5">4.5:1</label>
+                    <input type="radio" name="contrastValue" value='7.0'><label for="7.0">7:1</label>
+                  </form>
                 </div>
 
-                <div class="buttonAndContrast">
-                  <div id='myButton'>My Button</div>
-                  <div id="contrastValue">Contrast: 2.6:1</div>
-                  <div id="optionalWarning">! WARNING: Below Contrast Requirement</div>
+                <div class="thirdColumn">
+                  <div id="buttonAndContrast">
+                    <div id='myButton'>My Button</div>
+                    <div id="contrastValue">Contrast: 2.6:1</div>
+                    <div id="optionalWarning">! WARNING: Below Contrast Requirement</div>
+                  </div>
+
+                  <div>
+                    <input type="checkbox" name="showCloseColors"><label for="showCloseColors">View closest accessible colors</label>
+                  </div>
+                  <div id="closestColorsContainer">
+                    <div id="renderClosestAccessibileColorsContainer">
+                      <div id="renderClosestAccessibileColors2" class="renderClosestAccessibileColors"></div>
+                      <div id="renderClosestAccessibileColors1" class="renderClosestAccessibileColors"></div>
+                    </div>
+                    <div id="renderedClosestColor"></div>
+                  </div>
                 </div>
 
               </div>
-              <div class="section" id='section2'>
-                <svg width="712" height="500" viewbox="0 0 712 500" id="colorCurve"></svg>
-              </div>
-
           </div>
     </div>
 </body>

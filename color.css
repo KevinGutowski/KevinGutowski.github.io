@@ -22,7 +22,7 @@
 }
 
 #section1 > div {
-    margin-right: 8px;
+    margin-right: 16px;
 }
 #colorSpaceContainer {
     display: block;
@@ -90,13 +90,18 @@
     margin-top: 16px;
 }
 
-.buttonAndContrast {
+.contrastRequirementTitle {
+    margin-top:16px;
+}
+
+#buttonAndContrast {
     width: 243px;
+    height: 91px;
     display: flex;
     flex-direction: column;
 }
 
-.buttonAndContrast div {
+#buttonAndContrast div {
     align-self: center;
     margin-bottom: 4px;
 }
@@ -118,3 +123,41 @@
     color: red;
     letter-spacing: .5px;
 }
+
+form {
+    margin-top: 4px;
+}
+
+#closestColorsContainer .formTitle {
+    margin-top: 8px;
+}
+
+#renderClosestAccessibileColors1 {
+    display: flex;
+}
+
+#renderClosestAccessibileColors2 {
+    display: flex;
+}
+
+.renderClosestAccessibileColors div {
+    cursor: pointer;
+}
+
+.renderClosestAccessibileColors div.selected {
+    box-shadow: 0 0 0 1px white;
+    z-index: 2;
+    border-radius: 2px;
+}
+
+.renderClosestAccessibileColors div:hover {
+    box-shadow: 0 0 0 2px white;
+    z-index: 1;
+    border-radius: 2px;
+    min-width: 2px;
+}
+
+.renderClosestAccessibileColors div.notActive {
+    box-shadow: 0 0 0 2px white;
+}
+
