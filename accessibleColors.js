@@ -1,33 +1,33 @@
 // Double Line
-var initialColor = {
-  h: 285,
-  s: 65,
-  v: 57
-}
-
-var white = {
-  h: 62,
-  s: 89,
-  v: 43
-}
-
 // var initialColor = {
 //   h: 285,
-//   s: 0,
-//   v: 91
+//   s: 65,
+//   v: 57
 // }
 
 // var white = {
-//   h: 0,
-//   s: 0,
-//   v: 100
+//   h: 62,
+//   s: 89,
+//   v: 43
 // }
+
+var initialColor = {
+  h: 199,
+  s: 42,
+  v: 77
+}
+
+var white = {
+  h: 0,
+  s: 0,
+  v: 100
+}
 
 var currentColor = initialColor;
 var currentTextColor = white;
-var showCloseColorsChecked = true;
+var showCloseColorsChecked = false;
 var accessibilityArray1, accessibilityArray2;
-var currentContrastRequirement = 3.0;
+var currentContrastRequirement = 4.5;
 var numberOfAccessibilityPaths = 1;
 var currentlySelectedColor, renderedColor, renderedColorText;
 var currentColorPosition;
@@ -474,6 +474,7 @@ function accessibleColors() {
       updateCloseColorLines();
       updateRenderClosestColors(currentColor, currentContrastRequirement);
       updateCurrentlySelectedColor();
+      updateRenderedColorLocation();
     }
   }
 
@@ -884,8 +885,6 @@ function accessibleColors() {
           }
         return "rgb(" + tempRGB.r + "," + tempRGB.g + "," + tempRGB.b + ")"
         });
-
-
   }
 
   function updateCurrentlySelectedColor() {
@@ -905,17 +904,69 @@ function accessibleColors() {
       currentlySelectedColor.classed('notActive', false);
       renderedColor.datum(function() { renderedColorText = this.dataset.hsv; })
       updateRenderedClosestColor(renderedColorText);
+      updateRenderedColorLocation();
     })
     .on('mouseout', function() {
         renderedColor = currentlySelectedColor;
         currentlySelectedColor.classed('notActive', true);
         renderedColor.datum(function() { renderedText = this.dataset.hsv; })
         updateRenderedClosestColor(renderedText);
+        updateRenderedColorLocation();
     });
   }
 
   function updateRenderedClosestColor(text) {
     d3.select('#renderedClosestColor').text(text);
+  }
+
+  function updateRenderedColorLocation() {
+    renderedColorArray = renderedColorText.split(',')
+
+    var renderedColorPosition = [{
+      x: renderedColorArray[1] * 2,
+      y: 200 - (renderedColorArray[2] * 2)
+    }]
+
+    // Data Bind
+    var renderedColorCircle = satBrightSpaceSVG.selectAll('.renderedColorCircle').data(renderedColorPosition);
+
+    // Update
+    renderedColorCircle
+      .attr('cx', function(d) { return d.x})
+      .attr('cy', function(d) { return d.y});
+
+    // Enter
+    renderedColorCircle.enter().append('circle')
+      .attr('cx', function(d) { return d.x})
+      .attr('cy', function(d) { return d.y})
+      .attr('r', 3)
+      .attr('fill', 'white')
+      .attr('class', 'renderedColorCircle');
+
+    // Exit
+    renderedColorCircle.exit().remove();
+
+    // Data Bind
+    var renderedColorLine = satBrightSpaceSVG.selectAll('.renderedColorLine').data(renderedColorPosition);
+
+    // Update
+    renderedColorLine
+      .attr('x1', currentColorPosition.x)
+      .attr('y1', currentColorPosition.y)
+      .attr('x2', function(d) { return d.x})
+      .attr('y2', function(d) { return d.y})
+
+    // Enter
+    renderedColorLine.enter().insert('line', ':first-child')
+      .attr('x1', currentColorPosition.x)
+      .attr('y1', currentColorPosition.y)
+      .attr('x2', function(d) { return d.x})
+      .attr('y2', function(d) { return d.y})
+      .attr('stroke', 'white')
+      .attr('class', 'renderedColorLine');
+
+    // Remove
+    renderedColorLine.exit().remove();
   }
 
   // MARK: Interaction Handlers
@@ -957,9 +1008,20 @@ function accessibleColors() {
   d3.selectAll(("input[name='showCloseColors']")).on("change", function(){
     showCloseColorsChecked = this.checked;
     if (!this.checked) {
-      d3.select("#closestColorsContainer").attr('style', "display:none;")
+      d3.select("#closestColorsContainer").attr('style', "display:none;");
+      d3.selectAll(".renderedColorCircle").attr('style', "display:none;");
+      d3.selectAll('.renderedColorLine').attr('style', "display:none;");
+      d3.selectAll('.closestColorLine').attr('style', "display:none;");
+      d3.selectAll('.closestBrightCircle').attr('style', "display:none;");
+      d3.selectAll('.closestSatCircle').attr('style', "display:none;");
     } else {
       d3.select("#closestColorsContainer").attr('style', "display:inherit;")
+      d3.selectAll(".renderedColorCircle").attr('style', "display:inherit;");
+      d3.selectAll('.renderedColorLine').attr('style', "display:inherit;");
+      d3.selectAll('.closestColorLine').attr('style', "display:inherit;");
+      d3.selectAll('.closestBrightCircle').attr('style', "display:inherit;");
+      d3.selectAll('.closestSatCircle').attr('style', "display:inherit;");
+      update(currentColor,currentTextColor,currentContrastRequirement)
     }
 
     // TODO: Hide / show accessibility dots
