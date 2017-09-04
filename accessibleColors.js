@@ -909,8 +909,8 @@ function accessibleColors() {
     .on('mouseout', function() {
         renderedColor = currentlySelectedColor;
         currentlySelectedColor.classed('notActive', true);
-        renderedColor.datum(function() { renderedText = this.dataset.hsv; })
-        updateRenderedClosestColor(renderedText);
+        renderedColor.datum(function() { renderedColorText = this.dataset.hsv; })
+        updateRenderedClosestColor(renderedColorText);
         updateRenderedColorLocation();
     });
   }
