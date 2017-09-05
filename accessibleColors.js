@@ -823,9 +823,9 @@ function accessibleColors() {
       }
 
       if (isBrightnessLarger1) {
-        var indexStart2 = saturation2X;
-      } else {
         var indexStart2 = brightness2X;
+      } else {
+        var indexStart2 = saturation2X;
       }
 
       var renderClosestAccessibileColors2 = d3.select('#renderClosestAccessibileColors2').selectAll('.closestsColors2').data(closestColorsArray2);
