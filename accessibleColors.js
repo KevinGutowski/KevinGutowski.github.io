@@ -515,6 +515,30 @@ function accessibleColors() {
     d3.select('#textHueInput').property('value', currentTextColor.h);
     d3.select('#textSatInput').property('value', currentTextColor.s);
     d3.select('#textBrightInput').property('value', currentTextColor.v);
+    updateHexColor(currentColor);
+    updateTextHexColor(currentTextColor);
+  }
+
+  function updateHexColor(currentColor) {
+    var tempRGBnorm = HSVtoRGB(normHSV(currentColor))
+    var tempRGB = {
+      r: Math.round(tempRGBnorm.r * 255),
+      g: Math.round(tempRGBnorm.g * 255),
+      b: Math.round(tempRGBnorm.b * 255)
+    }
+    var hex = rgbToHex(tempRGB);
+    d3.select('#hexInput').property('value', hex);
+  }
+
+  function updateTextHexColor(currentTextColor) {
+    var tempRGBnorm = HSVtoRGB(normHSV(currentTextColor))
+    var tempRGB = {
+      r: Math.floor(tempRGBnorm.r * 255),
+      g: Math.floor(tempRGBnorm.g * 255),
+      b: Math.floor(tempRGBnorm.b * 255)
+    }
+    var hex = rgbToHex(tempRGB);
+    d3.select('#textHexInput').property('value', hex);
   }
 
   function updateGridImageData(currentColor) {
@@ -645,8 +669,6 @@ function accessibleColors() {
         return d.y;
       })
       .attr('r', 5);
-
-    console.log(closestBrightCirclePosition1, closestBrightCirclePosition2)
 
     // Exit
     closestBrightCircles.exit().remove();
@@ -916,7 +938,21 @@ function accessibleColors() {
   }
 
   function updateRenderedClosestColor(text) {
-    d3.select('#renderedClosestColor').text(text);
+    var textArray = text.split(', ');
+    var tempHSV = {
+      h: textArray[0],
+      s: textArray[1],
+      v: textArray[2]
+    }
+    var tempRGBnorm = HSVtoRGB(normHSV(tempHSV));
+    var tempRGB = {
+      r: Math.round(tempRGBnorm.r*255),
+      g: Math.round(tempRGBnorm.g*255),
+      b: Math.round(tempRGBnorm.b*255)
+    }
+    var hex = "#" + rgbToHex(tempRGB);
+    var hsb = "HSB(" + text + ")"
+    d3.select('#renderedClosestColor').text(hsb + " " + hex);
   }
 
   function updateRenderedColorLocation() {
@@ -997,6 +1033,25 @@ function accessibleColors() {
 
   d3.select('#textBrightInput').on('input', function() {
     currentTextColor.v = this.value;
+    update(currentColor, currentTextColor, currentContrastRequirement);
+  });
+
+  d3.select('#hexInput').on('change', function() {
+    if (this.value.charAt(0) == "#") {
+      var hex = this.value.substring(1);
+      d3.select('#hexInput').property('value', hex);
+    } else {
+      var hex = this.value;
+    }
+    var tempHSVnorm = RGBtoHSV(normRGB(hexToRgb(hex)));
+    console.log(tempHSVnorm);
+    var tempHSV = {
+      h: Math.round(tempHSVnorm.h*360),
+      s: Math.round(tempHSVnorm.s*100),
+      v: Math.round(tempHSVnorm.v*100)
+    }
+    console.log(tempHSV);
+    currentColor = tempHSV;
     update(currentColor, currentTextColor, currentContrastRequirement);
   });
 

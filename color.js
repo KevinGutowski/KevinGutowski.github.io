@@ -190,3 +190,13 @@ function hexToRgb(hex){
 
     return myTempRGBColor
 }
+
+function rgbToHex(color) {
+
+    function colorComponentToHex(c) {
+        var hex = c.toString(16);
+        return hex.length == 1 ? "0" + hex : hex;
+    }
+
+    return "" + colorComponentToHex(color.r) + colorComponentToHex(color.g) + colorComponentToHex(color.b)
+}
