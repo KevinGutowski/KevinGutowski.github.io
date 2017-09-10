@@ -533,9 +533,9 @@ function accessibleColors() {
   function updateTextHexColor(currentTextColor) {
     var tempRGBnorm = HSVtoRGB(normHSV(currentTextColor))
     var tempRGB = {
-      r: Math.floor(tempRGBnorm.r * 255),
-      g: Math.floor(tempRGBnorm.g * 255),
-      b: Math.floor(tempRGBnorm.b * 255)
+      r: Math.round(tempRGBnorm.r * 255),
+      g: Math.round(tempRGBnorm.g * 255),
+      b: Math.round(tempRGBnorm.b * 255)
     }
     var hex = rgbToHex(tempRGB);
     d3.select('#textHexInput').property('value', hex);
@@ -1044,14 +1044,29 @@ function accessibleColors() {
       var hex = this.value;
     }
     var tempHSVnorm = RGBtoHSV(normRGB(hexToRgb(hex)));
-    console.log(tempHSVnorm);
     var tempHSV = {
       h: Math.round(tempHSVnorm.h*360),
       s: Math.round(tempHSVnorm.s*100),
       v: Math.round(tempHSVnorm.v*100)
     }
-    console.log(tempHSV);
     currentColor = tempHSV;
+    update(currentColor, currentTextColor, currentContrastRequirement);
+  });
+
+  d3.select('#textHexInput').on('change', function() {
+    if (this.value.charAt(0) == "#") {
+      var hex = this.value.substring(1);
+      d3.select('#textHexInput').property('value', hex);
+    } else {
+      var hex = this.value;
+    }
+    var tempHSVnorm = RGBtoHSV(normRGB(hexToRgb(hex)));
+    var tempHSV = {
+      h: Math.round(tempHSVnorm.h*360),
+      s: Math.round(tempHSVnorm.s*100),
+      v: Math.round(tempHSVnorm.v*100)
+    }
+    currentTextColor = tempHSV;
     update(currentColor, currentTextColor, currentContrastRequirement);
   });
 
