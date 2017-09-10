@@ -86,6 +86,16 @@
     margin-right: 32px;
 }
 
+.hexInput {
+    border-top: 1px solid rgba(74,74,74,.2);
+    padding-top: 8px;
+    margin-top: 8px;
+}
+
+.hexInput input {
+    width: 50px;
+}
+
 .textColorTitle {
     margin-top: 16px;
 }
