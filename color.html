@@ -37,7 +37,26 @@
           </div>
           <div class="description"><a href="./index.html"><i class="fa fa-home"></i>Home</a></div>
           <div class="content">
-              <h1>Accessible Color Spaces</h1>
+              <h1>Color &amp; Contrast Picker</h1>
+              <div id="topContainer">
+                <div id='myButton'>My Button</div>
+                <div class="contrastContainer">
+                  <div class="formTitle">Contrast</div>
+                  <div class="contrastValueContainer">
+                    <span id="optionalWarning"></span>
+                    <div id="contrastValue">2.6:1</div>
+                  </div>
+                </div>
+                <div class="contrastRequirementContainer">
+                  <div class="formTitle contrastRequirementTitle">REQUIREMENT</div>
+                  <form>
+                    <input type="radio" name="contrastValue" value='3.0'><label for="3.0">3.0:1</label>
+                    <input type="radio" name="contrastValue" value='4.5' checked='checked'><label for="4.5">4.5:1</label>
+                    <input type="radio" name="contrastValue" value='7.0'><label for="7.0">7.0:1</label>
+                  </form>
+                </div>
+              </div>
+
               <div class="section" id='section1'>
                 <div id="colorPicker">
                   <div id="colorSpaceContainer">
@@ -47,72 +66,67 @@
 
                   <div id="hueChannelContainer">
                     <canvas width="360" height="1" id="hueChannel"></canvas>
-                    <svg width="200" height="10" id="hueNubSpace"></svg>
+                    <svg width="200" height="12" id="hueNubSpace"></svg>
                   </div>
-
                 </div>
                 <div id='inputs'>
-                  <div class="formTitle">BUTTON / BG COLOR</div>
-                  <div class='colorInput'>
-                    Hue
-                    <input type="number" name="hueInput" min="0" max="360" inputmode="numeric" pattern="[0-9]*" id="hueInput" class="buttonColor">
-                  </div>
-                  <div class='colorInput'>
-                    Saturation
-                    <input type="number" name="satInput" min="0" max="100" inputmode="numeric" pattern="[0-9]*" id="satInput" class="buttonColor">
-                  </div>
-                  <div class='colorInput'>
-                    Brightness
-                    <input type="number" name="brightInput" min="0" max="100" inputmode="numeric" pattern="[0-9]*" id="brightInput" class="buttonColor">
-                  </div>
-                  <div class='colorInput hexInput'>
-                    Hex
-                    <input type="text" name="hexInput" id="hexInput" class="buttonColor">
-                  </div>
-                  <div class="formTitle textColorTitle">TEXT COLOR</div>
-                  <div class='colorInput'>
-                    Hue
-                    <input type="number" name="textHueInput" min="0" max="360" inputmode="numeric" pattern="[0-9]*" id="textHueInput" class="buttonColor">
-                  </div>
-                  <div class='colorInput'>
-                    Saturation
-                    <input type="number" name="textSatInput" min="0" max="100" inputmode="numeric" pattern="[0-9]*" id="textSatInput" class="buttonColor">
-                  </div>
-                  <div class='colorInput'>
-                    Brightness
-                    <input type="number" name="textBrightInput" min="0" max="100" inputmode="numeric" pattern="[0-9]*" id="textBrightInput" class="buttonColor">
-                  </div>
-                  <div class='colorInput hexInput'>
-                    Hex
-                    <input type="text" name="textHexInput" id="textHexInput" class="buttonColor">
-                  </div>
-                  <div class="formTitle contrastRequirementTitle">CONTRAST REQUIREMENT</div>
-                  <form>
-                    <input type="radio" name="contrastValue" value='3.0'><label for="3.0">3:1</label>
-                    <input type="radio" name="contrastValue" value='4.5' checked='checked'><label for="4.5">4.5:1</label>
-                    <input type="radio" name="contrastValue" value='7.0'><label for="7.0">7:1</label>
-                  </form>
-                </div>
-
-                <div class="thirdColumn">
-                  <div id="buttonAndContrast">
-                    <div id='myButton'>My Button</div>
-                    <div id="contrastValue">Contrast: 2.6:1</div>
-                    <div id="optionalWarning">! WARNING: Below Contrast Requirement</div>
-                  </div>
-
-                  <div>
-                    <input type="checkbox" name="showCloseColors"><label for="showCloseColors">View closest accessible colors</label>
-                  </div>
-                  <div id="closestColorsContainer">
-                    <div id="renderClosestAccessibileColorsContainer">
-                      <div id="renderClosestAccessibileColors2" class="renderClosestAccessibileColors"></div>
-                      <div id="renderClosestAccessibileColors1" class="renderClosestAccessibileColors"></div>
+                  <div class="colorSelectContainer selectedColorTarget">
+                    <div class="formTitle">BACKGROUND COLOR</div>
+                    <div class="colorInputsContainer">
+                      <div class='colorInput'>
+                        <input type="number" name="hueInput" min="0" max="360" inputmode="numeric" pattern="[0-9]*" id="hueInput" class="buttonColor">
+                        <div class="colorChannelLabel">H</div>
+                      </div>
+                      <div class='colorInput'>
+                        <input type="number" name="satInput" min="0" max="100" inputmode="numeric" pattern="[0-9]*" id="satInput" class="buttonColor">
+                        <div class="colorChannelLabel">S</div>
+                      </div>
+                      <div class='colorInput'>
+                        <input type="number" name="brightInput" min="0" max="100" inputmode="numeric" pattern="[0-9]*" id="brightInput" class="buttonColor">
+                        <div class="colorChannelLabel">B</div>
+                      </div>
+                      <div class='colorInput hexInput'>
+                        <input type="text" name="hexInput" id="hexInput" class="buttonColor">
+                        <div class="colorChannelLabel">HEX</div>
+                      </div>
                     </div>
-                    <div id="renderedClosestColor"></div>
+                  </div>
+
+                  <div class="colorSelectContainer">
+                    <div class="formTitle textColorTitle">TEXT COLOR</div>
+                    <div class="colorInputsContainer">
+                      <div class='colorInput'>
+                        <input type="number" name="textHueInput" min="0" max="360" inputmode="numeric" pattern="[0-9]*" id="textHueInput" class="buttonColor">
+                        <div class="colorChannelLabel">H</div>
+                      </div>
+                      <div class='colorInput'>
+                        <input type="number" name="textSatInput" min="0" max="100" inputmode="numeric" pattern="[0-9]*" id="textSatInput" class="buttonColor">
+                        <div class="colorChannelLabel">S</div>
+                      </div>
+                      <div class='colorInput'>
+                        <input type="number" name="textBrightInput" min="0" max="100" inputmode="numeric" pattern="[0-9]*" id="textBrightInput" class="buttonColor">
+                        <div class="colorChannelLabel">B</div>
+                      </div>
+                      <div class='colorInput hexInput'>
+                        <input type="text" name="textHexInput" id="textHexInput" class="buttonColor">
+                        <div class="colorChannelLabel">HEX</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="closestColorsSection">
+                    <div>
+                      <input type="checkbox" name="showCloseColors"><label for="showCloseColors">View closest accessible colors</label>
+                    </div>
+                    <div id="closestColorsContainer">
+                      <div id="renderClosestAccessibileColorsContainer">
+                        <div id="renderClosestAccessibileColors2" class="renderClosestAccessibileColors"></div>
+                        <div id="renderClosestAccessibileColors1" class="renderClosestAccessibileColors"></div>
+                      </div>
+                      <div id="renderedClosestColor"></div>
+                    </div>
                   </div>
                 </div>
-
               </div>
           </div>
     </div>

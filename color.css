@@ -19,22 +19,35 @@
 #section1 {
     display:flex;
     justify-content: flex-start;
+    align-items: flex-start;
 }
 
-#section1 > div {
-    margin-right: 16px;
+#colorPicker {
+    background-color: white;
+    border-radius: 4px;
+    padding: 8px;
+    box-shadow: 0 5px 8px rgba(0,0,0,.2);
+    border: 1px solid rgba(0,0,0,0.10);
+    z-index: 2;
 }
+
+#inputs {
+    z-index: 1;
+}
+
 #colorSpaceContainer {
     display: block;
     position: relative;
     width: 200px;
     height: 200px;
+    border-radius: 4px;
 }
 
 #colorSpaceContainer > * {
     position: absolute;
     top:0;
     left:0;
+    border-radius: 4px;
 }
 
 #colorSpace {
@@ -42,26 +55,55 @@
     height: 200px;
 }
 
+#satBrightSpace {
+    box-shadow: inset 0 1px 1px 0 rgba(0,0,0,0.15), inset 0 0 2px 0 rgba(0,0,0,0.10), inset 0 0 0 1px rgba(0,0,0,0.2);
+}
+
 #hueChannelContainer {
     display: block;
     position: relative;
     width: 200px;
-    height: 10px;
-    margin: 8px 0;
+    height: 12px;
+    margin-top: 8px;
+    border-radius: 4px;
 }
 
 #hueChannelContainer > * {
     position: absolute;
     top: 0;
     left: 0;
+    border-radius: 4px;
 }
 
 #hueNubSpace {
+    box-shadow: inset 0 1px 1px 0 rgba(0,0,0,0.15), inset 0 0 2px 0 rgba(0,0,0,0.10), inset 0 0 0 1px rgba(0,0,0,.2);
 }
 
 #hueChannel {
     width: 200px;
-    height: 10px;
+    height: 12px;
+}
+
+.colorSelectContainer:first-child {
+    margin-top: 16px;
+}
+
+.colorSelectContainer {
+    background-color: #FFFFFF;
+    border: 1px solid #FFFFFF;
+    border-left: 0;
+    padding: 8px 16px 8px 24px;
+    border-radius: 0 4px 4px 0;
+}
+
+.selectedColorTarget {
+    background-color: #F5F5F5;
+    border: 1px solid #E1E5EB;
+    border-left: 0;
+}
+
+.colorInputsContainer {
+    display: flex;
 }
 
 .formTitle {
@@ -82,60 +124,91 @@
 }
 
 .colorInput input {
-    float: right;
-    margin-right: 32px;
-}
-
-.hexInput {
-    border-top: 1px solid rgba(74,74,74,.2);
-    padding-top: 8px;
-    margin-top: 8px;
+    margin: 0 8px 0 0;
+    font-size: 16px;
+    border-radius: 4px 4px 0 0;
+    border: 1px solid #E1E5EB;
+    width: 50px;
+    padding: 4px 0 4px 8px;
+    text-align: left;
 }
 
 .hexInput input {
-    width: 50px;
+    width: 72px;
+}
+
+.colorChannelLabel {
+    width: 52px; /* +2 px to account for the border on the inputs */
+    border-radius: 0 0 4px 4px;
+    background-color: #EBEDF0;
+    padding: 2px 0 2px 8px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #3C4E52;
+    letter-spacing: 1px;
+}
+
+.hexInput .colorChannelLabel {
+    width: 74px;
 }
 
 .textColorTitle {
-    margin-top: 16px;
+    margin-top: 8px;
 }
 
-.contrastRequirementTitle {
-    margin-top:16px;
-}
-
-#buttonAndContrast {
-    width: 243px;
-    height: 91px;
+#topContainer {
     display: flex;
-    flex-direction: column;
-}
-
-#buttonAndContrast div {
-    align-self: center;
-    margin-bottom: 4px;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-bottom: 24px;
 }
 
 #myButton {
     padding: 12px 24px;
-    display: inline-block;
     letter-spacing: 1px;
+    border-radius: 4px;
+    margin-right: 48px;
+}
+
+.contrastContainer {
+    margin-right: 40px;
+}
+
+.contrastValueContainer {
+    position: relative;
 }
 
 #contrastValue {
-    font-weight: bold;
-    font-feature-settings: "tnum"
+    font-size: 24px;
+    font-feature-settings: "tnum";
 }
 
 #optionalWarning {
-    font-size: 12px;
-    font-weight: bold;
-    color: red;
-    letter-spacing: .5px;
+    position: absolute;
+    left: -23px;
+    width: 19px;
+    height: 16px;
+    background-image: url("warning.svg");
+    top: 6px;
 }
+
+.contrastRequirementContainer input {
+    vertical-align: text-top;
+}
+
+.contrastRequirementContainer label {
+    font-size: 18px;
+    margin-left: 2px;
+    margin-right: 6px;
+}
+
 
 form {
     margin-top: 4px;
+}
+
+.closestColorsSection {
+    margin-left: 24px;
 }
 
 #closestColorsContainer .formTitle {
@@ -150,8 +223,29 @@ form {
     display: flex;
 }
 
+.renderClosestAccessibileColors {
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.renderClosestAccessibileColors:before {
+    pointer-events: none;
+    position: absolute;
+    border-radius: 4px;
+    content: '';
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    box-shadow: inset 0 1px 1px 0 rgba(0,0,0,0.15), inset 0 0 2px 0 rgba(0,0,0,0.10), inset 0 0 0 1px rgba(0,0,0,.2);
+}
+
 .renderClosestAccessibileColors div {
     cursor: pointer;
+    height: 12px;
+    width: 100%;
 }
 
 .renderClosestAccessibileColors div.selected {
@@ -174,5 +268,6 @@ form {
 #renderedClosestColor {
     width: 100%;
     text-align: center;
+    margin-top: 2px;
 }
 

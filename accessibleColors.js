@@ -406,7 +406,7 @@ function accessibleColors() {
     .attr('x', currentColor.h / 1.8)
     .attr('y', 0)
     .attr('width', 5)
-    .attr('height', 10)
+    .attr('height', 12)
     .attr('id', 'hueSelectorNub')
     .attr('fill', 'white')
     .attr('stroke-width', 1)
@@ -499,7 +499,7 @@ function accessibleColors() {
   function updateContrastWarning(currentColor, currentTextColor, currentContrastRequirement) {
     var contrastVal = getColorContrastHSV(currentColor, currentTextColor);
     var floored = (contrastVal.toString().match(/^-?\d+(?:\.\d{0,1})?/)[0]*1).toFixed(1)
-    d3.select('#contrastValue').text('Contrast: ' + floored + ':1');
+    d3.select('#contrastValue').text(floored + ':1');
     if (contrastVal >= currentContrastRequirement) {
       d3.select('#optionalWarning').attr('style', "display:none");
     } else {
@@ -807,8 +807,6 @@ function accessibleColors() {
 
     // ENTER
     renderClosestAccessibileColors1.enter().append('div')
-        .style('height', '20px')
-        .style('width', '100%')
         .attr('class', 'closestsColors1')
         .attr('data-hsv', function (d,i) {
           var tempHSV = {
@@ -891,8 +889,6 @@ function accessibleColors() {
           }
           return (tempHSV.h + ", " + tempHSV.s + ', ' + tempHSV.v)
         })
-        .style('height', '20px')
-        .style('width', '100%')
         .style('background-color', function (d,i) {
           var tempHSV = {
             h: currentColor.h,
