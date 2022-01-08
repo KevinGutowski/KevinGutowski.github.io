@@ -28,6 +28,11 @@
   <a href="../../home.html">All Sets</a>
   <!-- your content here... -->
   <h1>VMax Climax</h1>
+  <div class="table-controls">
+    <label for="quantity-ur"><input type="checkbox" id="quantity-ur" name="quantity" checked onclick='updateTable(this)'> Quantity</label>
+    <label for="pricing-ur"><input type="checkbox" id="pricing-ur" name="pricing" checked onclick='updateTable(this)'> Pricing</label>
+  </div>
+  
   <div class="scroll-table" id='summary'></div>
   <div class="note">*Bigweb’s overall pricing data can be off because when a card goes out of stock the price gets removed and is recorded as a zero.</div>
 </body>

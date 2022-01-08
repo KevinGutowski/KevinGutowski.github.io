@@ -32,6 +32,10 @@ td {
   background-color: purple;
 }
 
+.priceItem {
+  background-color: aqua;
+}
+
 .hidingColumn {
   display: none;
 }

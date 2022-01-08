@@ -1,6 +1,9 @@
 let sites = ['fullcomp', 'cardrush','bigweb','yuyu-tei','clabo'];
 let spacerColumnsForSummary = [1,5,9,13,17];
 let quantityColumns = [1,2,5,6,9,10,13,14,17,18];
+let priceColumns = [3,4,7,8,11,12,15,16,19,20];
+let quantityCheckboxState = true
+let priceCheckboxState = true
 
 function parseSummaryTable(tableData) {
     var table = $('<table></table>');
@@ -61,6 +64,8 @@ function parseSummaryTable(tableData) {
             } else {
                 if (quantityColumns.includes(j)) {
                   row.append($('<td class="quantityItem">'+numberWithCommas(cellData)+'</td>'));    
+                } else if (priceColumns.includes(j)) {
+                  row.append($('<td class="priceItem">'+numberWithCommas(cellData)+'</td>'));    
                 } else {
                   row.append($('<td>'+numberWithCommas(cellData)+'</td>'));  
                 }
@@ -77,7 +82,6 @@ $.ajax({
     url: "./data/summary.csv",
     success: function (data) {
         $('#summary').append(parseSummaryTable(Papa.parse(data).data));
-        hideQuantity()
     }
 });
 
@@ -90,27 +94,68 @@ function prepCellData(cellData, column,site) {
   data = splits[splits.length - 1];
   if (quantityColumns.includes(column)) {
     return $('<th class="quantityItem">'+ data +'</th>')
+  } else if (priceColumns.includes(column)) {
+    return $('<th class="priceItem">'+ data +'</th>')
   } else {
     return $('<th>'+ data +'</th>')
   }
 }
 
-function hideQuantity() {
+function showOnlyPricing() {
   let quantityItems = Array.from(document.getElementsByClassName('quantityItem'))
+  let priceItems = Array.from(document.getElementsByClassName('priceItem'))
   let columnGroup = Array.from(document.getElementsByClassName('column-group'))
   let columnHeaderGroup = Array.from(document.getElementsByClassName('column-header-group'))
   
   quantityItems.forEach(item=>item.classList.add('hidingColumn'))
+  priceItems.forEach(item=>item.classList.remove('hidingColumn'))
   columnGroup.forEach(item=>item.setAttribute('span','2'))
   columnHeaderGroup.forEach(item=>item.setAttribute('colspan','2'))
 }
 
-function showQuantity() {
+function showQuantityAndPricing() {
   let quantityItems = Array.from(document.getElementsByClassName('quantityItem'))
+  let priceItems = Array.from(document.getElementsByClassName('priceItem'))
   let columnGroup = Array.from(document.getElementsByClassName('column-group'))
   let columnHeaderGroup = Array.from(document.getElementsByClassName('column-header-group'))
   
   quantityItems.forEach(item=>item.classList.remove('hidingColumn'))
+  priceItems.forEach(item=>item.classList.remove('hidingColumn'))
   columnGroup.forEach(item=>item.setAttribute('span','4'))
   columnHeaderGroup.forEach(item=>item.setAttribute('colspan','4'))
+}
+
+function showOnlyQuantity() {
+  let quantityItems = Array.from(document.getElementsByClassName('quantityItem'))
+  let columnGroup = Array.from(document.getElementsByClassName('column-group'))
+  let priceItems = Array.from(document.getElementsByClassName('priceItem'))
+  let columnHeaderGroup = Array.from(document.getElementsByClassName('column-header-group'))
+  
+  quantityItems.forEach(item=>item.classList.remove('hidingColumn'))
+  priceItems.forEach(item=>item.classList.add('hidingColumn'))
+  columnGroup.forEach(item=>item.setAttribute('span','2'))
+  columnHeaderGroup.forEach(item=>item.setAttribute('colspan','2'))
+}
+
+function updateTable(button) {
+  let clickedPricing = (button.name == "pricing" ? true : false)
+  let inputs = Array.from(button.parentNode.parentNode.getElementsByTagName('input'))
+  let currentStates = inputs.map(input=>input.checked)
+  if ((currentStates[0] && currentStates[1]) == false) {
+    // toggle other button
+    if (clickedPricing) {
+      inputs[0].checked = true
+    } else {
+      inputs[1].checked = true
+    }
+  }
+  
+  currentStates = inputs.map(input=>input.checked)
+  if (currentStates[0] && currentStates[1]) {
+    showQuantityAndPricing()
+  } else if (currentStates[0]) {
+    showOnlyQuantity()
+  } else {
+    showOnlyPricing()
+  }
 }
