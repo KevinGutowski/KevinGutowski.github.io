@@ -36,6 +36,35 @@ td {
   background-color: aqua;
 }
 
+.priceValue {
+  white-space: nowrap;
+}
+
+.quantityValue {
+  white-space: nowrap;
+}
+
 .hidingColumn {
   display: none;
+}
+
+td.header-name {
+  text-align: left;
+}
+
+td.priceValue {
+  text-align: left;
+}
+
+td.quantityValue {
+  text-align: left;
+}
+
+.card-name {
+  color: white;
+  text-align: left;
+  background-position: left, -50% 27%;
+  background-size: auto, 105%;
+  width: 240px;
+  min-width: 240px;
 }

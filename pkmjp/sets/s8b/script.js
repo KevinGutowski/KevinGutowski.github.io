@@ -45,7 +45,7 @@ function parseSummaryTable(tableData) {
               if (i == 0) {
                 row.append($('<th class="spacer" />'));    
               } else {
-                row.append($('<td class="spacer" />'));  
+                row.append($('<td class="spacer" />'));
               }
             }
             if (cellData == 'card_rarity') {
@@ -77,6 +77,106 @@ function parseSummaryTable(tableData) {
     return table;
 }
 
+function parseMainTable(data) {
+  var table = $('<table></table>');
+  var tableHead = $(`
+    <colgroup>
+      <col class='col-group-number'>
+      <col class='col-group-name'>
+      <col class='col-group-spacer'>
+      <col span=4 class='column-group column-group-fullcomp'>
+      <col class='col-group-spacer'>
+      <col span=4 class='column-group column-group-cardrush'>
+      <col class='col-group-spacer'>
+      <col span=4 class='column-group column-group-bigweb'>
+      <col class='col-group-spacer'>
+      <col span=4 class='column-group column-group-yuyu'>
+      <col class='col-group-spacer'>
+      <col span=4 class='column-group column-group-clabo'>
+    </colgroup>
+    <tr>
+        <th></th>
+        <th></th>
+        <th class="spacer" />
+        <th colspan='4' class='column-header-group'>Fullcomp</th>
+        <th class="spacer" />
+        <th colspan='4' class='column-header-group'>Cardrush</th>
+        <th class="spacer" />
+        <th colspan='4' class='column-header-group'>Bigweb</th>
+        <th class="spacer" />
+        <th colspan='4' class='column-header-group'>Yuyu-tei</th>
+        <th class="spacer" />
+        <th colspan='4' class='column-header-group'>C-labo</th>
+    </tr>
+    <tr class='second-header'>
+        <td>#</td>
+        <td class='header-name'>Name</td>
+        <td class='spacer'></td>
+        <td class="quantityItem quantityValue">Quantity</td>
+        <td class="quantityItem">Diff</td>
+        <td class="priceItem priceValue">Price</td>
+        <td class="priceItem">Diff</td>
+        <td class='spacer'></td>
+        <td class="quantityItem quantityValue">Quantity</td>
+        <td class="quantityItem">Diff</td>
+        <td class="priceItem priceValue">Price</td>
+        <td class="priceItem">Diff</td>
+        <td class='spacer'></td>
+        <td class="quantityItem quantityValue">Quantity</td>
+        <td class="quantityItem">Diff</td>
+        <td class="priceItem priceValue">Price</td>
+        <td class="priceItem">Diff</td>
+        <td class='spacer'></td>
+        <td class="quantityItem quantityValue">Quantity</td>
+        <td class="quantityItem">Diff</td>
+        <td class="priceItem priceValue">Price</td>
+        <td class="priceItem">Diff</td>
+        <td class='spacer'></td>
+        <td class="quantityItem quantityValue">Quantity</td>
+        <td class="quantityItem">Diff</td>
+        <td class="priceItem priceValue">Price</td>
+        <td class="priceItem">Diff</td>
+    </tr>
+  `)
+  table.append(tableHead)
+  data.forEach(row=>{
+    let namestyling = `background-image: linear-gradient(to right, rgba(0,0,0,0.9) 25%, transparent),url(./data/cards/${row.card_number}.jpg);`
+    let rowString = `
+    <tr>
+      <td class='card-number'>${row.card_number}</td>
+      <td class='card-name' style="${namestyling}">${row.card_name}</td>
+      <td class='spacer'></td>
+      <td class='quantityItem quantityValue fullcomp'>${row.fullcomp_quantity_trend}${numberWithCommas(row.fullcomp_latest_quantity)}</td>
+      <td class='quantityItem quantityDiff fullcomp'>${numberWithCommas(row.fullcomp_quantity_diff)}</td>
+      <td class='priceItem priceValue fullcomp'><a target="_blank" href="${row.fullcomp_url}">${row.fullcomp_price_trend}${numberWithCommas(row.fullcomp_latest_price)}</a></td>
+      <td class='priceItem priceDiff fullcomp'>${numberWithCommas(row.fullcomp_price_diff)}</td>
+      <td class='spacer'></td>
+      <td class='quantityItem quantityValue cardrush'>${row.cardrush_quantity_trend}${numberWithCommas(row.cardrush_latest_quantity)}</td>
+      <td class='quantityItem quantityDiff cardrush'>${numberWithCommas(row.cardrush_quantity_diff)}</td>
+      <td class='priceItem priceValue cardrush'><a target="_blank" href="${row.cardrush_url}">${row.cardrush_price_trend}${numberWithCommas(row.cardrush_latest_price)}</a></td>
+      <td class='priceItem priceDiff cardrush'>${numberWithCommas(row.cardrush_price_diff)}</td>
+      <td class='spacer'></td>
+      <td class='quantityItem quantityValue bigweb'>${row.bigweb_quantity_trend}${numberWithCommas(row.bigweb_latest_quantity)}</td>
+      <td class='quantityItem quantityDiff bigweb'>${numberWithCommas(row.bigweb_quantity_diff)}</td>
+      <td class='priceItem priceValue bigweb'><a target="_blank" href="${row.bigweb_url}">${row.bigweb_price_trend}${numberWithCommas(row.bigweb_latest_price)}</a></td>
+      <td class='priceItem priceDiff bigweb'>${numberWithCommas(row.bigweb_price_diff)}</td>
+      <td class='spacer'></td>
+      <td class='quantityItem quantityValue yuyu-tei'>${row['yuyu-tei_quantity_trend']}${numberWithCommas(row['yuyu-tei_latest_quantity'])}</td>
+      <td class='quantityItem quantityDiff yuyu-tei'>${numberWithCommas(row['yuyu-tei_quantity_diff'])}</td>
+      <td class='priceItem priceValue yuyu-tei'><a target="_blank" href="${row['yuyu-tei_url']}">${row['yuyu-tei_price_trend']}${numberWithCommas(row['yuyu-tei_latest_price'])}</a></td>
+      <td class='priceItem priceDiff yuyu-tei'>${numberWithCommas(row['yuyu-tei_price_diff'])}</td>
+      <td class='spacer'></td>
+      <td class='quantityItem quantityValue clabo'>${row.clabo_quantity_trend}${numberWithCommas(row.clabo_latest_quantity)}</td>
+      <td class='quantityItem quantityDiff clabo'>${numberWithCommas(row.clabo_quantity_diff)}</td>
+      <td class='priceItem priceValue clabo'><a target="_blank" href="${row.clabo_url}">${row.clabo_price_trend}${numberWithCommas(row.clabo_latest_price)}</a></td>
+      <td class='priceItem priceDiff clabo'>${numberWithCommas(row.clabo_price_diff)}</td>
+    </tr>
+    `
+    table.append($(rowString))
+  })
+  return table
+}
+
 $.ajax({
     type: "GET",
     url: "./data/summary.csv",
@@ -84,6 +184,27 @@ $.ajax({
         $('#summary').append(parseSummaryTable(Papa.parse(data).data));
     }
 });
+
+$.ajax({
+  type: "GET",
+  url: './data/main.csv',
+  success: function(data) {
+    let dataArray = Papa.parse(data,{header: true}).data
+    dataArray.pop()
+
+    let urs = dataArray.filter(row=>row.card_rarity == 'UR')
+    $('#ur-table').append(parseMainTable(urs))
+
+    let srs = dataArray.filter(row=>row.card_rarity == 'SR')
+    $('#sr-table').append(parseMainTable(srs))
+
+    let csrs = dataArray.filter(row=>row.card_rarity == 'CSR')
+    $('#csr-table').append(parseMainTable(csrs))
+
+    let chrs = dataArray.filter(row=>row.card_rarity == 'CHR')
+    $('#chr-table').append(parseMainTable(chrs))
+  }
+})
 
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -111,6 +232,13 @@ function showOnlyPricing() {
   priceItems.forEach(item=>item.classList.remove('hidingColumn'))
   columnGroup.forEach(item=>item.setAttribute('span','2'))
   columnHeaderGroup.forEach(item=>item.setAttribute('colspan','2'))
+  
+  let checkmarkgroups = Array.from(document.getElementsByClassName('table-controls'))
+  checkmarkgroups.forEach(group=>{
+    let inputs = Array.from(group.getElementsByTagName('input'))
+    inputs[0].checked = false
+    inputs[1].checked = true
+  })
 }
 
 function showQuantityAndPricing() {
@@ -123,6 +251,13 @@ function showQuantityAndPricing() {
   priceItems.forEach(item=>item.classList.remove('hidingColumn'))
   columnGroup.forEach(item=>item.setAttribute('span','4'))
   columnHeaderGroup.forEach(item=>item.setAttribute('colspan','4'))
+
+  let checkmarkgroups = Array.from(document.getElementsByClassName('table-controls'))
+  checkmarkgroups.forEach(group=>{
+    let inputs = Array.from(group.getElementsByTagName('input'))
+    inputs[0].checked = true
+    inputs[1].checked = true
+  })
 }
 
 function showOnlyQuantity() {
@@ -135,6 +270,13 @@ function showOnlyQuantity() {
   priceItems.forEach(item=>item.classList.add('hidingColumn'))
   columnGroup.forEach(item=>item.setAttribute('span','2'))
   columnHeaderGroup.forEach(item=>item.setAttribute('colspan','2'))
+
+  let checkmarkgroups = Array.from(document.getElementsByClassName('table-controls'))
+  checkmarkgroups.forEach(group=>{
+    let inputs = Array.from(group.getElementsByTagName('input'))
+    inputs[0].checked = true
+    inputs[1].checked = false
+  })
 }
 
 function updateTable(button) {

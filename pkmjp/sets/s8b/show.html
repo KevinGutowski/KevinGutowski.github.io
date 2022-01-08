@@ -26,14 +26,53 @@
 
 <body>
   <a href="../../home.html">All Sets</a>
-  <!-- your content here... -->
   <h1>VMax Climax</h1>
   <div class="table-controls">
-    <label for="quantity-ur"><input type="checkbox" id="quantity-ur" name="quantity" checked onclick='updateTable(this)'> Quantity</label>
-    <label for="pricing-ur"><input type="checkbox" id="pricing-ur" name="pricing" checked onclick='updateTable(this)'> Pricing</label>
+    <label for="quantity-summary"><input type="checkbox" id="quantity-summary" name="quantity" checked onclick='updateTable(this)'> Quantity</label>
+    <label for="pricing-summary"><input type="checkbox" id="pricing-summary" name="pricing" checked onclick='updateTable(this)'> Pricing</label>
   </div>
   
   <div class="scroll-table" id='summary'></div>
-  <div class="note">*Bigweb’s overall pricing data can be off because when a card goes out of stock the price gets removed and is recorded as a zero.</div>
+  <div class="note">*Bigweb’s pricing data can be off because when a card goes out of stock the price gets removed and is recorded as a zero.</div>
+
+  <section class='rarity-group'>
+    <h2 class="rarity-group-title" id="ur">UR</h2>
+    <h4 class="rarity-count"><strong>8</strong> Total</h4>
+    <div class="table-controls">
+      <label for="quantity-ur"><input type="checkbox" id="quantity-ur" name="quantity" checked onclick='updateTable(this)'> Quantity</label>
+      <label for="pricing-ur"><input type="checkbox" id="pricing-ur" name="pricing" checked onclick='updateTable(this)'> Pricing</label>
+    </div>
+    <div class="scroll-table" id='ur-table'></div>
+  </section>
+
+  <section class='rarity-group'>
+    <h2 class="rarity-group-title" id="sr">SR</h2>
+    <h4 class="rarity-count"><strong>23</strong> Total</h4>
+    <div class="table-controls">
+      <label for="quantity-sr"><input type="checkbox" id="quantity-sr" name="quantity" checked onclick='updateTable(this)'> Quantity</label>
+      <label for="pricing-sr"><input type="checkbox" id="pricing-sr" name="pricing" checked onclick='updateTable(this)'> Pricing</label>
+    </div>
+    <div class="scroll-table" id='sr-table'></div>
+  </section>
+
+  <section class='rarity-group'>
+    <h2 class="rarity-group-title" id="csr">CSR</h2>
+    <h4 class="rarity-count"><strong>39</strong> Total</h4>
+    <div class="table-controls">
+      <label for="quantity-csr"><input type="checkbox" id="quantity-csr" name="quantity" checked onclick='updateTable(this)'> Quantity</label>
+      <label for="pricing-csr"><input type="checkbox" id="pricing-csr" name="pricing" checked onclick='updateTable(this)'> Pricing</label>
+    </div>
+    <div class="scroll-table" id='csr-table'></div>
+  </section>
+
+  <section class='rarity-group'>
+    <h2 class="rarity-group-title" id="chr">CHR</h2>
+    <h4 class="rarity-count"><strong>28</strong> Total</h4>
+    <div class="table-controls">
+      <label for="quantity-chr"><input type="checkbox" id="quantity-chr" name="quantity" checked onclick='updateTable(this)'> Quantity</label>
+      <label for="pricing-chr"><input type="checkbox" id="pricing-chr" name="pricing" checked onclick='updateTable(this)'> Pricing</label>
+    </div>
+    <div class="scroll-table" id='chr-table'></div>
+  </section>
 </body>
 </html>
