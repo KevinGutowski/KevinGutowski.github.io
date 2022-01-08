@@ -1,0 +1,37 @@
+table {
+  border-collapse: collapse;
+}
+.scroll-table {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.column-group {
+  background-color: red;
+}
+
+th.column-header-group {
+  border-radius: 8px 8px 0 0;
+  text-align: center;
+}
+
+th, td {
+  text-align: right;
+  padding: 1px 8px;
+}
+
+td {
+  border-bottom: 1px solid green;
+}
+
+.spacer {
+  width: 4px;
+}
+
+.quantityItem {
+  background-color: purple;
+}
+
+.hidingColumn {
+  display: none;
+}
