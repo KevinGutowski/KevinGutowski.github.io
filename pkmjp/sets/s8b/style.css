@@ -1,13 +1,137 @@
+:root {
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+
+  --indigo-50: #eef2ff;
+  --indigo-100: #e0e7ff;
+  --indigo-200: #c7d2fe;
+  --indigo-300: #a5b4fc;
+  --indigo-400: #818cf8;
+  --indigo-500: #6366f1;
+  --indigo-600: #4f46e5;
+  --indigo-700: #4338ca;
+  --indigo-800: #3730a3;
+  --indigo-900: #312e81;
+
+  --row-hover-transition-time: .2s;
+  --card-hover-time: .3s;
+
+  --stroke-color: white;
+  --stroke-width: 1px;
+  --text-border: calc(var(--stroke-width) * 1) calc(var(--stroke-width) * 0) 0
+  var(--stroke-color),
+calc(var(--stroke-width) * 0.9239) calc(var(--stroke-width) * 0.3827) 0
+  var(--stroke-color),
+calc(var(--stroke-width) * 0.7071) calc(var(--stroke-width) * 0.7071) 0
+  var(--stroke-color),
+calc(var(--stroke-width) * 0.3827) calc(var(--stroke-width) * 0.9239) 0
+  var(--stroke-color),
+calc(var(--stroke-width) * 0) calc(var(--stroke-width) * 1) 0
+  var(--stroke-color),
+calc(var(--stroke-width) * -0.3827) calc(var(--stroke-width) * 0.9239) 0
+  var(--stroke-color),
+calc(var(--stroke-width) * -0.7071) calc(var(--stroke-width) * 0.7071) 0
+  var(--stroke-color),
+calc(var(--stroke-width) * -0.9239) calc(var(--stroke-width) * 0.3827) 0
+  var(--stroke-color),
+calc(var(--stroke-width) * -1) calc(var(--stroke-width) * 0) 0
+  var(--stroke-color),
+calc(var(--stroke-width) * -0.9239) calc(var(--stroke-width) * -0.3827) 0
+  var(--stroke-color),
+calc(var(--stroke-width) * -0.7071) calc(var(--stroke-width) * -0.7071) 0
+  var(--stroke-color),
+calc(var(--stroke-width) * -0.3827) calc(var(--stroke-width) * -0.9239) 0
+  var(--stroke-color),
+calc(var(--stroke-width) * 0) calc(var(--stroke-width) * -1) 0
+  var(--stroke-color),
+calc(var(--stroke-width) * 0.3827) calc(var(--stroke-width) * -0.9239) 0
+  var(--stroke-color),
+calc(var(--stroke-width) * 0.7071) calc(var(--stroke-width) * -0.7071) 0
+  var(--stroke-color),
+calc(var(--stroke-width) * 0.9239) calc(var(--stroke-width) * -0.3827) 0
+  var(--stroke-color);
+}
+body {
+  font-family: futura-pt, sans-serif;
+}
+
+a {
+  color: var(--indigo-600);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:visited {
+  color: var(--indigo-900);
+}
+
 table {
   border-collapse: collapse;
+  font-size: 17px;;
+}
+
+table img {
+  height: 13px;
+  width: auto;
 }
 .scroll-table {
   width: 100%;
   overflow-x: auto;
 }
 
+#summary-table tr:nth-child(2) {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0px;
+  border-bottom: 2px solid var(--gray-300);
+}
+
+.second-header {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0px;
+  border-bottom: 2px solid var(--gray-300);
+  font-weight: bold;
+}
+
+#summary-table td:first-child {
+  font-weight: bold;
+}
+
+.table-content {
+  transition: background-color var(--row-hover-transition-time) ease;
+}
+
+.table-content:nth-child(even) {
+  background-color: #9b9da330;
+}
+
+.table-content:hover {
+  position: relative;
+  background-color: var(--indigo-50);
+  /* z-index: 1; */
+}
+
+.table-content:hover > .card-name {
+  border-bottom: 1px solid #c5c5c5;
+  background-size: auto, 110%;
+}
+
+.table-content:hover > .high-density {
+  text-shadow: var(--text-border), 1px 1px 8px white;
+}
+
 .column-group {
-  background-color: red;
+  background-color: var(--gray-100);
 }
 
 th.column-header-group {
@@ -21,19 +145,11 @@ th, td {
 }
 
 td {
-  border-bottom: 1px solid green;
+  border-bottom: 1px solid var(--gray-300);
 }
 
 .spacer {
-  width: 4px;
-}
-
-.quantityItem {
-  background-color: purple;
-}
-
-.priceItem {
-  background-color: aqua;
+  width: 2px;
 }
 
 .priceValue {
@@ -67,4 +183,19 @@ td.quantityValue {
   background-size: auto, 105%;
   width: 240px;
   min-width: 240px;
+  font-family: source-han-sans-japanese, sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  transition-delay: 0 .2s;
+  transition: border-color var(--row-hover-transition-time) ease,
+  background-size var(--card-hover-time) ease;
+}
+
+.high-density {
+  letter-spacing: var(--stroke-width);
+  color: black;
+  font-family: source-han-sans-japanese, sans-serif;
+  font-weight: 900;
+  font-style: normal;
+  text-shadow: var(--text-border);
 }

@@ -1,15 +1,15 @@
 let sites = ['fullcomp', 'cardrush','bigweb','yuyu-tei','clabo'];
-let spacerColumnsForSummary = [1,5,9,13,17];
+let spacerColumnsForSummary = [5,9,13,17];
 let quantityColumns = [1,2,5,6,9,10,13,14,17,18];
 let priceColumns = [3,4,7,8,11,12,15,16,19,20];
 let quantityCheckboxState = true
 let priceCheckboxState = true
+let pr = 2
 
 function parseSummaryTable(tableData) {
     var table = $('<table></table>');
     var tableHead = $(`
       <colgroup>
-        <col>
         <col>
         <col span=4 class='column-group'>
         <col>
@@ -23,7 +23,6 @@ function parseSummaryTable(tableData) {
       </colgroup>
       <tr>
           <th></th>
-          <th class="spacer" />
           <th colspan='4' class='column-header-group'>Fullcomp</th>
           <th class="spacer" />
           <th colspan='4' class='column-header-group'>Cardrush</th>
@@ -39,14 +38,15 @@ function parseSummaryTable(tableData) {
     $(tableData).each(function (i, rowData) {
 //      return early due to some issue with csv table?
         if (i == 6) { return }
-        var row = $('<tr></tr>');
+        if (i == 0) {
+          var row = $('<tr></tr>');
+        } else {
+          var row = $('<tr class="table-content"></tr>');
+        }
+        console.log(i)
         $(rowData).each(function (j, cellData) {
             if (spacerColumnsForSummary.includes(j)) {
-              if (i == 0) {
-                row.append($('<th class="spacer" />'));    
-              } else {
                 row.append($('<td class="spacer" />'));
-              }
             }
             if (cellData == 'card_rarity') {
               cellData = 'rarity';
@@ -140,11 +140,12 @@ function parseMainTable(data) {
   `)
   table.append(tableHead)
   data.forEach(row=>{
+    let nameClasses = (pr > 1 ? 'card-name high-density' : 'card-name')
     let namestyling = `background-image: linear-gradient(to right, rgba(0,0,0,0.9) 25%, transparent),url(./data/cards/${row.card_number}.jpg);`
     let rowString = `
-    <tr>
+    <tr class='table-content'>
       <td class='card-number'>${row.card_number}</td>
-      <td class='card-name' style="${namestyling}">${row.card_name}</td>
+      <td class='${nameClasses}' style="${namestyling}">${row.card_name}</td>
       <td class='spacer'></td>
       <td class='quantityItem quantityValue fullcomp'>${row.fullcomp_quantity_trend}${numberWithCommas(row.fullcomp_latest_quantity)}</td>
       <td class='quantityItem quantityDiff fullcomp'>${numberWithCommas(row.fullcomp_quantity_diff)}</td>
@@ -177,11 +178,12 @@ function parseMainTable(data) {
   return table
 }
 
+
 $.ajax({
     type: "GET",
     url: "./data/summary.csv",
     success: function (data) {
-        $('#summary').append(parseSummaryTable(Papa.parse(data).data));
+        $('#summary-table').append(parseSummaryTable(Papa.parse(data).data));
     }
 });
 
@@ -204,7 +206,7 @@ $.ajax({
     let chrs = dataArray.filter(row=>row.card_rarity == 'CHR')
     $('#chr-table').append(parseMainTable(chrs))
   }
-})
+});
 
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -301,3 +303,19 @@ function updateTable(button) {
     showOnlyPricing()
   }
 }
+
+const updateFont = ()=> {
+  console.log('updating font')
+  pr = window.devicePixelRatio;
+  if (pr > 1) {
+    Array.from(document.getElementsByClassName('card-name')).forEach(el=>{
+      el.classList.add('high-density')
+    })
+  } else {
+    Array.from(document.getElementsByClassName('card-name')).forEach(el=>{
+      el.classList.remove('high-density')
+    })
+  }
+  matchMedia(`(resolution: ${pr}dppx)`).addEventListener('change',updateFont,{once:true});
+}
+// updateFont()

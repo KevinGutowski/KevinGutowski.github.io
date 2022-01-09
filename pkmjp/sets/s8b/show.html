@@ -22,7 +22,6 @@
   <link rel="stylesheet" href="https://use.typekit.net/fib6umu.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.1.2/papaparse.js"></script>
-  <script src="script.js"></script>
 </head>
 
 <body>
@@ -33,7 +32,7 @@
     <label for="pricing-summary"><input type="checkbox" id="pricing-summary" name="pricing" checked onclick='updateTable(this)'> Pricing</label>
   </div>
   
-  <div class="scroll-table" id='summary'></div>
+  <div class="scroll-table" id='summary-table'></div>
   <div class="note">*Bigweb’s pricing data can be off because when a card goes out of stock the price gets removed and is recorded as a zero.</div>
 
   <section class='rarity-group'>
@@ -75,5 +74,7 @@
     </div>
     <div class="scroll-table" id='chr-table'></div>
   </section>
+  <script src="script.js"></script>
+  
 </body>
 </html>
