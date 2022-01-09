@@ -176,10 +176,6 @@ table img {
   font-weight: bold;
 }
 
-.rarity-group .scroll-table {
-  margin-top: -16px;
-}
-
 .table-content {
   transition: background-color var(--row-hover-transition-time) ease;
 }
@@ -271,4 +267,33 @@ td.quantityValue {
   font-weight: 900;
   font-style: normal;
   text-shadow: var(--text-border);
+}
+
+@media only screen and (max-width: 600px) {
+  body {
+    padding: 8px;
+  }
+
+  .title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .scroll-table {
+    margin: 0 -16px;
+    width: auto;
+  }
+
+  table {
+    font-size: 14px;;
+  }
+
+  .card-name {
+    width: 160px;
+    min-width: 160px;
+    line-height: 24px;
+    position: sticky;
+    left:0;
+  }
 }
