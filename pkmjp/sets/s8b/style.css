@@ -59,6 +59,49 @@ calc(var(--stroke-width) * 0.9239) calc(var(--stroke-width) * -0.3827) 0
 }
 body {
   font-family: futura-pt, sans-serif;
+  padding: 24px;
+}
+
+nav {
+  margin-bottom: 16px;
+}
+
+h1 {
+  padding: 0;
+  margin: 0;
+  font-size: 32px;
+}
+
+h2 {
+  font-size: 28px;
+  padding: 0;
+  margin: 0 0 8px 0;
+}
+
+h3 {
+  padding: 0;
+  margin: 0 0 8px 0;
+}
+
+h4 {
+  font-size: 18px;
+  padding: 0;
+  margin: 0 0 8px 0;
+}
+
+h5 {
+  padding: 0;
+  margin: 0 0 8px 0;
+}
+
+section {
+  margin-bottom: 16px;
+}
+
+.section-title {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
 }
 
 a {
@@ -74,6 +117,28 @@ a:visited {
   color: var(--indigo-900);
 }
 
+.title {
+  display: flex;
+  margin-bottom: 16px;
+  gap: 8px;
+}
+
+.title img {
+  max-height: 80px;
+}
+
+.info-grid {
+  display: inline-grid;
+  width:-moz-fit-content;
+  width:fit-content;
+  grid-template-columns: auto auto;
+  column-gap: 8px;
+}
+
+.info-grid div:nth-child(2n - 1) {
+  text-align: right;
+}
+
 table {
   border-collapse: collapse;
   font-size: 17px;;
@@ -86,6 +151,10 @@ table img {
 .scroll-table {
   width: 100%;
   overflow-x: auto;
+}
+
+#summary-table {
+  margin-top: 8px;
 }
 
 #summary-table tr:nth-child(2) {
@@ -105,6 +174,10 @@ table img {
 
 #summary-table td:first-child {
   font-weight: bold;
+}
+
+.rarity-group .scroll-table {
+  margin-top: -16px;
 }
 
 .table-content {

@@ -1,5 +1,4 @@
 <!doctype html>
-
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -25,19 +24,39 @@
 </head>
 
 <body>
-  <a href="../../home.html">All Sets</a>
-  <h1>VMax Climax</h1>
-  <div class="table-controls">
-    <label for="quantity-summary"><input type="checkbox" id="quantity-summary" name="quantity" checked onclick='updateTable(this)'> Quantity</label>
-    <label for="pricing-summary"><input type="checkbox" id="pricing-summary" name="pricing" checked onclick='updateTable(this)'> Pricing</label>
-  </div>
+  <nav>
+    <a href="../../home.html">PKM<strong>JP</strong></a>
+    <span>/</span>
+    <span>VMAX CLIMAX</span>
+  </nav>
   
-  <div class="scroll-table" id='summary-table'></div>
-  <div class="note">*Bigweb’s pricing data can be off because when a card goes out of stock the price gets removed and is recorded as a zero.</div>
+  <section class='summary-group'>
+    <div class="title">
+      <img src="./data/images/logo.png" alt="VMax Climax logo">
+      <div>
+        <h1>VMax Climax</h1>
+        <div class="info-grid">
+          <div>Release Date</div>
+          <div><strong>Dec 3, 2021</strong></div>
+          <div>Cards</div>
+          <div><strong>184</strong> (+100 Secret)</div>
+        </div>
+      </div>
+    </div>
+    <div class="table-controls">
+      <label for="quantity-summary"><input type="checkbox" id="quantity-summary" name="quantity" checked onclick='updateTable(this)'> Quantity</label>
+      <label for="pricing-summary"><input type="checkbox" id="pricing-summary" name="pricing" checked onclick='updateTable(this)'> Pricing</label>
+    </div>
+    
+    <div class="scroll-table" id='summary-table'></div>
+    <div class="note">*Bigweb’s pricing data can be off because when a card goes out of stock the price gets removed and is recorded as a zero.</div>
+</section>
 
   <section class='rarity-group'>
-    <h2 class="rarity-group-title" id="ur">UR</h2>
-    <h4 class="rarity-count"><strong>8</strong> Total</h4>
+    <div class="section-title">
+      <h2 class="rarity-group-title" id="ur">UR</h2>
+      <h4 class="rarity-count"><strong>8</strong> Total</h4>
+    </div>
     <div class="table-controls">
       <label for="quantity-ur"><input type="checkbox" id="quantity-ur" name="quantity" checked onclick='updateTable(this)'> Quantity</label>
       <label for="pricing-ur"><input type="checkbox" id="pricing-ur" name="pricing" checked onclick='updateTable(this)'> Pricing</label>
@@ -46,8 +65,10 @@
   </section>
 
   <section class='rarity-group'>
-    <h2 class="rarity-group-title" id="sr">SR</h2>
-    <h4 class="rarity-count"><strong>23</strong> Total</h4>
+    <div class="section-title">
+      <h2 class="rarity-group-title" id="sr">SR</h2>
+      <h4 class="rarity-count"><strong>23</strong> Total</h4>
+    </div>
     <div class="table-controls">
       <label for="quantity-sr"><input type="checkbox" id="quantity-sr" name="quantity" checked onclick='updateTable(this)'> Quantity</label>
       <label for="pricing-sr"><input type="checkbox" id="pricing-sr" name="pricing" checked onclick='updateTable(this)'> Pricing</label>
@@ -56,8 +77,10 @@
   </section>
 
   <section class='rarity-group'>
-    <h2 class="rarity-group-title" id="csr">CSR</h2>
-    <h4 class="rarity-count"><strong>39</strong> Total</h4>
+    <div class="section-title">
+      <h2 class="rarity-group-title" id="csr">CSR</h2>
+      <h4 class="rarity-count"><strong>39</strong> Total</h4>
+    </div>
     <div class="table-controls">
       <label for="quantity-csr"><input type="checkbox" id="quantity-csr" name="quantity" checked onclick='updateTable(this)'> Quantity</label>
       <label for="pricing-csr"><input type="checkbox" id="pricing-csr" name="pricing" checked onclick='updateTable(this)'> Pricing</label>
@@ -66,8 +89,10 @@
   </section>
 
   <section class='rarity-group'>
-    <h2 class="rarity-group-title" id="chr">CHR</h2>
-    <h4 class="rarity-count"><strong>28</strong> Total</h4>
+    <div class="section-title">
+      <h2 class="rarity-group-title" id="chr">CHR</h2>
+      <h4 class="rarity-count"><strong>28</strong> Total</h4>
+    </div>
     <div class="table-controls">
       <label for="quantity-chr"><input type="checkbox" id="quantity-chr" name="quantity" checked onclick='updateTable(this)'> Quantity</label>
       <label for="pricing-chr"><input type="checkbox" id="pricing-chr" name="pricing" checked onclick='updateTable(this)'> Pricing</label>
