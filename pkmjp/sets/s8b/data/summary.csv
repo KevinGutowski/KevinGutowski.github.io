@@ -1,6 +1,6 @@
-card_rarity,fullcomp_latest_quantity,fullcomp_quantity_diff,fullcomp_latest_price,fullcomp_price_diff,cardrush_latest_quantity,cardrush_quantity_diff,cardrush_latest_price,cardrush_price_diff,bigweb_latest_quantity,bigweb_quantity_diff,bigweb_latest_price,bigweb_price_diff,yuyu-tei_latest_quantity,yuyu-tei_quantity_diff,yuyu-tei_latest_price,yuyu-tei_price_diff,clabo_latest_quantity,clabo_quantity_diff,clabo_latest_price,clabo_price_diff
-CHR,928,219,9520,37,5178,1370,9580,-180,223,-79,7040,-2560,774,154,10260,0,317,-7,8320,-100
-CSR,200,6,66808,-10828,153,-348,69720,-4200,109,-587,4800,-22580,515,33,76120,0,186,-8,68420,0
-SR,112,-9,59335,-15960,194,-31,63980,-9020,232,-70,13600,-5880,156,41,69680,0,153,0,62480,0
-UR,33,19,20136,-2501,33,-35,20840,-1200,67,-39,3360,-1280,52,1,23740,0,34,0,20740,0
-ALL,1273,235,155799,-29252,5558,956,164120,-14600,631,-775,28800,-32300,1497,229,179800,0,690,-15,159960,-100
+card_rarity,fullcomp_latest_stock,fullcomp_stock_diff,fullcomp_latest_price,fullcomp_price_diff,cardrush_latest_stock,cardrush_stock_diff,cardrush_latest_price,cardrush_price_diff,bigweb_latest_stock,bigweb_stock_diff,bigweb_latest_price,bigweb_price_diff,yuyu-tei_latest_stock,yuyu-tei_stock_diff,yuyu-tei_latest_price,yuyu-tei_price_diff,clabo_latest_stock,clabo_stock_diff,clabo_latest_price,clabo_price_diff
+CHR,896,187,9520,37,5260,1452,9580,-180,214,-88,6760,-2840,748,128,10260,0,317,-7,8320,-100
+CSR,146,-48,66808,-10828,190,-311,69720,-4200,191,-505,13100,-14280,474,-8,76120,0,171,-23,68420,0
+SR,104,-17,59535,-15760,169,-56,63980,-9020,283,-19,15280,-4200,132,17,69680,0,146,-7,62480,0
+UR,24,10,20136,-2501,20,-48,20840,-1200,84,-22,8420,3780,45,-6,23740,0,34,0,20740,0
+ALL,1170,132,155999,-29052,5639,1037,164120,-14600,772,-634,43560,-17540,1399,131,179800,0,668,-37,159960,-100

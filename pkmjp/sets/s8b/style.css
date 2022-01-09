@@ -141,16 +141,12 @@ a:visited {
 
 table {
   border-collapse: collapse;
-  font-size: 17px;;
+  font-size: 17px;
 }
 
 table img {
   height: 13px;
   width: auto;
-}
-.scroll-table {
-  width: 100%;
-  overflow-x: auto;
 }
 
 #summary-table {
