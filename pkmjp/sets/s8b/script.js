@@ -4,7 +4,6 @@ let quantityColumns = [1,2,5,6,9,10,13,14,17,18];
 let priceColumns = [3,4,7,8,11,12,15,16,19,20];
 let quantityCheckboxState = true
 let priceCheckboxState = true
-let pr = 2
 
 function parseSummaryTable(tableData) {
     var table = $('<table></table>');
@@ -140,7 +139,7 @@ function parseMainTable(data) {
   `)
   table.append(tableHead)
   data.forEach(row=>{
-    let nameClasses = (pr > 1 ? 'card-name high-density' : 'card-name')
+    let nameClasses = 'card-name high-density'
     let namestyling = `background-image: linear-gradient(to right, rgba(0,0,0,0.9) 25%, transparent),url(./data/cards/${row.card_number}.jpg);`
     let rowString = `
     <tr class='table-content'>
@@ -303,19 +302,3 @@ function updateTable(button) {
     showOnlyPricing()
   }
 }
-
-const updateFont = ()=> {
-  console.log('updating font')
-  pr = window.devicePixelRatio;
-  if (pr > 1) {
-    Array.from(document.getElementsByClassName('card-name')).forEach(el=>{
-      el.classList.add('high-density')
-    })
-  } else {
-    Array.from(document.getElementsByClassName('card-name')).forEach(el=>{
-      el.classList.remove('high-density')
-    })
-  }
-  matchMedia(`(resolution: ${pr}dppx)`).addEventListener('change',updateFont,{once:true});
-}
-// updateFont()
