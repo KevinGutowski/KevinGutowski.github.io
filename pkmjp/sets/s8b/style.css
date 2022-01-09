@@ -192,7 +192,6 @@ table img {
 
 .table-content:hover > .card-name {
   border-bottom: 1px solid #c5c5c5;
-  background-size: auto, 110%;
 }
 
 .table-content:hover > .high-density {
@@ -256,8 +255,7 @@ td.quantityValue {
   font-weight: 500;
   font-style: normal;
   transition-delay: 0 .2s;
-  transition: border-color var(--row-hover-transition-time) ease,
-  background-size var(--card-hover-time) ease;
+  transition: border-color var(--row-hover-transition-time) ease;
 }
 
 .high-density {
