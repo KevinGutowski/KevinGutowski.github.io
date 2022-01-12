@@ -183,7 +183,6 @@ table img {
 .table-content:hover {
   position: relative;
   background-color: var(--indigo-50);
-  /* z-index: 1; */
 }
 
 .table-content:hover > .card-name {
@@ -232,12 +231,28 @@ td.header-name {
   text-align: left;
 }
 
+th.priceValue {
+  text-align: left;
+}
+
+th.quantityValue {
+  text-align: left;
+}
+
 td.priceValue {
   text-align: left;
 }
 
 td.quantityValue {
   text-align: left;
+}
+
+.table-content .priceValue {
+  font-weight: 500;
+}
+
+.table-content .quantityValue {
+  font-weight: 500;
 }
 
 .card-name {
@@ -290,4 +305,16 @@ td.quantityValue {
     position: sticky;
     left:0;
   }
+}
+
+.positive {
+  color: green;
+}
+
+.negative {
+  color: red;
+}
+
+.neutral {
+  color: gray;
 }

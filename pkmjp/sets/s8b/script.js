@@ -6,6 +6,7 @@ let quantityCheckboxState = true
 let priceCheckboxState = true
 
 function parseSummaryTable(tableData) {
+    tableData.pop() // remove last empty object
     var table = $('<table></table>');
     var tableHead = $(`
       <colgroup>
@@ -32,46 +33,62 @@ function parseSummaryTable(tableData) {
           <th class="spacer" />
           <th colspan='4' class='column-header-group'>C-labo</th>
       </tr>
+      <tr>
+        <th>Rarity</th>
+        <!-- Fullcomp -->
+        <th class='quantityItem quantityValue'>Stock</th>
+        <th class='quantityItem'>Diff</th>
+        <th class='priceItem priceValue'>Price</th>
+        <th class='priceItem'>Diff</th>
+        <th class="spacer" />
+        <!-- Cardrush -->
+        <th class='quantityItem quantityValue'>Stock</th>
+        <th class='quantityItem'>Diff</th>
+        <th class='priceItem priceValue'>Price</th>
+        <th class='priceItem'>Diff</th>
+        <th class="spacer" />
+        <!-- Bigweb -->
+        <th class='quantityItem quantityValue'>Stock</th>
+        <th class='quantityItem'>Diff</th>
+        <th class='priceItem priceValue'>Price</th>
+        <th class='priceItem'>Diff</th>
+        <th class="spacer" />
+        <!-- Yuyu-tei -->
+        <th class='quantityItem quantityValue'>Stock</th>
+        <th class='quantityItem'>Diff</th>
+        <th class='priceItem priceValue'>Price</th>
+        <th class='priceItem'>Diff</th>
+        <th class="spacer" />
+        <!-- C-labo -->
+        <th class='quantityItem quantityValue'>Stock</th>
+        <th class='quantityItem'>Diff</th>
+        <th class='priceItem priceValue'>Price</th>
+        <th class='priceItem'>Diff</th>
+      </tr>
     `)
     table.append(tableHead)
     $(tableData).each(function (i, rowData) {
-//      return early due to some issue with csv table?
-        if (i == 6) { return }
-        if (i == 0) {
-          var row = $('<tr></tr>');
-        } else {
-          var row = $('<tr class="table-content"></tr>');
+      let rowString = `
+          <tr class="table-content">
+          <td>${rowData.card_rarity}</td>
+      `
+      sites.forEach((site,index)=>{
+        let quantityDiffValue = rowData[`${site}_stock_diff`]
+        let priceDiffValue = rowData[`${site}_price_diff`]
+        let columnGroupString = `
+          <td class='quantityItem quantityValue'>${rowData[`${site}_stock_trend`]}${numberWithCommas(rowData[`${site}_latest_stock`])}</td>
+          <td class='quantityItem ${getColorClass(quantityDiffValue)}'>${formatDiff(quantityDiffValue)}</td>
+          <td class='priceItem priceValue'>${rowData[`${site}_price_trend`]}${numberWithCommas(rowData[`${site}_latest_price`])}</td>
+          <td class='priceItem ${getColorClass(priceDiffValue)}'>${formatDiff(priceDiffValue)}</td>
+        `
+        if (sites.length - 1 != index) {
+          columnGroupString = columnGroupString + '<td class="spacer" />'
         }
-        console.log(i)
-        $(rowData).each(function (j, cellData) {
-            if (spacerColumnsForSummary.includes(j)) {
-                row.append($('<td class="spacer" />'));
-            }
-            if (cellData == 'card_rarity') {
-              cellData = 'rarity';
-              row.append($('<th>'+cellData+'</th>'));
-            } else if (cellData.startsWith(sites[0])) {
-              row.append(prepCellData(cellData,j,sites[0]))              
-            } else if (cellData.startsWith(sites[1])) {
-              row.append(prepCellData(cellData,j,sites[1]))              
-            } else if (cellData.startsWith(sites[2])) {
-              row.append(prepCellData(cellData,j,sites[2]))              
-            } else if (cellData.startsWith(sites[3])) {
-              row.append(prepCellData(cellData,j,sites[3]))              
-            } else if (cellData.startsWith(sites[4])) {
-              row.append(prepCellData(cellData,j,sites[4]))              
-            } else {
-                if (quantityColumns.includes(j)) {
-                  row.append($('<td class="quantityItem">'+numberWithCommas(cellData)+'</td>'));    
-                } else if (priceColumns.includes(j)) {
-                  row.append($('<td class="priceItem">'+numberWithCommas(cellData)+'</td>'));    
-                } else {
-                  row.append($('<td>'+numberWithCommas(cellData)+'</td>'));  
-                }
-                
-            }
-        });
-        table.append(row);
+
+        rowString = rowString + columnGroupString
+      })
+      rowString = rowString + '</tr>'
+      table.append(rowString);
     });
     return table;
 }
@@ -142,36 +159,24 @@ function parseMainTable(data) {
     let nameClasses = 'card-name high-density'
     let namestyling = `background-image: linear-gradient(to right, rgba(0,0,0,0.9) 25%, transparent),url(./data/cards/${row.card_number}.jpg);`
     let rowString = `
-    <tr class='table-content'>
+      <tr class='table-content'>
       <td class='card-number'>${row.card_number}</td>
       <td class='${nameClasses}' style="${namestyling}">${row.card_name}</td>
-      <td class='spacer'></td>
-      <td class='quantityItem quantityValue fullcomp'>${row.fullcomp_quantity_trend}${numberWithCommas(row.fullcomp_latest_quantity)}</td>
-      <td class='quantityItem quantityDiff fullcomp'>${numberWithCommas(row.fullcomp_quantity_diff)}</td>
-      <td class='priceItem priceValue fullcomp'><a target="_blank" href="${row.fullcomp_url}">${row.fullcomp_price_trend}${numberWithCommas(row.fullcomp_latest_price)}</a></td>
-      <td class='priceItem priceDiff fullcomp'>${numberWithCommas(row.fullcomp_price_diff)}</td>
-      <td class='spacer'></td>
-      <td class='quantityItem quantityValue cardrush'>${row.cardrush_quantity_trend}${numberWithCommas(row.cardrush_latest_quantity)}</td>
-      <td class='quantityItem quantityDiff cardrush'>${numberWithCommas(row.cardrush_quantity_diff)}</td>
-      <td class='priceItem priceValue cardrush'><a target="_blank" href="${row.cardrush_url}">${row.cardrush_price_trend}${numberWithCommas(row.cardrush_latest_price)}</a></td>
-      <td class='priceItem priceDiff cardrush'>${numberWithCommas(row.cardrush_price_diff)}</td>
-      <td class='spacer'></td>
-      <td class='quantityItem quantityValue bigweb'>${row.bigweb_quantity_trend}${numberWithCommas(row.bigweb_latest_quantity)}</td>
-      <td class='quantityItem quantityDiff bigweb'>${numberWithCommas(row.bigweb_quantity_diff)}</td>
-      <td class='priceItem priceValue bigweb'><a target="_blank" href="${row.bigweb_url}">${row.bigweb_price_trend}${numberWithCommas(row.bigweb_latest_price)}</a></td>
-      <td class='priceItem priceDiff bigweb'>${numberWithCommas(row.bigweb_price_diff)}</td>
-      <td class='spacer'></td>
-      <td class='quantityItem quantityValue yuyu-tei'>${row['yuyu-tei_quantity_trend']}${numberWithCommas(row['yuyu-tei_latest_quantity'])}</td>
-      <td class='quantityItem quantityDiff yuyu-tei'>${numberWithCommas(row['yuyu-tei_quantity_diff'])}</td>
-      <td class='priceItem priceValue yuyu-tei'><a target="_blank" href="${row['yuyu-tei_url']}">${row['yuyu-tei_price_trend']}${numberWithCommas(row['yuyu-tei_latest_price'])}</a></td>
-      <td class='priceItem priceDiff yuyu-tei'>${numberWithCommas(row['yuyu-tei_price_diff'])}</td>
-      <td class='spacer'></td>
-      <td class='quantityItem quantityValue clabo'>${row.clabo_quantity_trend}${numberWithCommas(row.clabo_latest_quantity)}</td>
-      <td class='quantityItem quantityDiff clabo'>${numberWithCommas(row.clabo_quantity_diff)}</td>
-      <td class='priceItem priceValue clabo'><a target="_blank" href="${row.clabo_url}">${row.clabo_price_trend}${numberWithCommas(row.clabo_latest_price)}</a></td>
-      <td class='priceItem priceDiff clabo'>${numberWithCommas(row.clabo_price_diff)}</td>
-    </tr>
     `
+
+    sites.forEach((site,index)=> {
+      let quantityDiffValue = row[`${site}_quantity_diff`]
+      let priceDiffValue = row[`${site}_price_diff`]
+      let columnString = `
+        <td class='spacer'></td>
+        <td class='quantityItem quantityValue ${site}'>${row[`${site}_quantity_trend`]}${numberWithCommas(row[`${site}_latest_quantity`])}</td>
+        <td class='quantityItem quantityDiff ${site} ${getColorClass(quantityDiffValue)}'>${formatDiff(quantityDiffValue)}</td>
+        <td class='priceItem priceValue ${site}'><a target="_blank" href="${row[`${site}_url`]}">${row[`${site}_price_trend`]}${numberWithCommas(row[`${site}_latest_price`])}</a></td>
+        <td class='priceItem priceDiff ${site} ${getColorClass(priceDiffValue)}'>${formatDiff(priceDiffValue)}</td>
+      `
+      rowString = rowString + columnString
+    })
+    rowString = rowString + "</tr>"
     table.append($(rowString))
   })
   return table
@@ -182,7 +187,7 @@ $.ajax({
     type: "GET",
     url: "./data/summary.csv",
     success: function (data) {
-        $('#summary-table').append(parseSummaryTable(Papa.parse(data).data));
+        $('#summary-table').append(parseSummaryTable(Papa.parse(data,{header:true}).data));
     }
 });
 
@@ -301,4 +306,23 @@ function updateTable(button) {
   } else {
     showOnlyPricing()
   }
+}
+
+function getColorClass(number) {
+  if (number > 0) {
+    return 'positive'
+  } else if (number == 0) {
+    return 'neutral'
+  } else {
+    return 'negative'
+  }
+}
+
+function formatDiff(number) {
+    let numberStringWithCommas = numberWithCommas(number)
+    if (number > 0) {
+      return numberStringWithCommas = '+' + numberStringWithCommas
+    } else {
+      return numberStringWithCommas
+    }
 }
