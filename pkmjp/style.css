@@ -1,0 +1,213 @@
+:root {
+    /*  https://www.themes.dev/tailwindcss-colors/ cool gray */
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+
+    --indigo-50: #eef2ff;
+    --indigo-100: #e0e7ff;
+    --indigo-200: #c7d2fe;
+    --indigo-300: #a5b4fc;
+    --indigo-400: #818cf8;
+    --indigo-500: #6366f1;
+    --indigo-600: #4f46e5;
+    --indigo-700: #4338ca;
+    --indigo-800: #3730a3;
+    --indigo-900: #312e81;
+
+    --row-hover-transition-time: .2s;
+    --card-hover-time: .3s;
+
+    --stroke-color: white;
+    --stroke-width: 1px;
+    --text-border: calc(var(--stroke-width) * 1) calc(var(--stroke-width) * 0) 0
+    var(--stroke-color),
+    calc(var(--stroke-width) * 0.9239) calc(var(--stroke-width) * 0.3827) 0
+    var(--stroke-color),
+    calc(var(--stroke-width) * 0.7071) calc(var(--stroke-width) * 0.7071) 0
+    var(--stroke-color),
+    calc(var(--stroke-width) * 0.3827) calc(var(--stroke-width) * 0.9239) 0
+    var(--stroke-color),
+    calc(var(--stroke-width) * 0) calc(var(--stroke-width) * 1) 0
+    var(--stroke-color),
+    calc(var(--stroke-width) * -0.3827) calc(var(--stroke-width) * 0.9239) 0
+    var(--stroke-color),
+    calc(var(--stroke-width) * -0.7071) calc(var(--stroke-width) * 0.7071) 0
+    var(--stroke-color),
+    calc(var(--stroke-width) * -0.9239) calc(var(--stroke-width) * 0.3827) 0
+    var(--stroke-color),
+    calc(var(--stroke-width) * -1) calc(var(--stroke-width) * 0) 0
+    var(--stroke-color),
+    calc(var(--stroke-width) * -0.9239) calc(var(--stroke-width) * -0.3827) 0
+    var(--stroke-color),
+    calc(var(--stroke-width) * -0.7071) calc(var(--stroke-width) * -0.7071) 0
+    var(--stroke-color),
+    calc(var(--stroke-width) * -0.3827) calc(var(--stroke-width) * -0.9239) 0
+    var(--stroke-color),
+    calc(var(--stroke-width) * 0) calc(var(--stroke-width) * -1) 0
+    var(--stroke-color),
+    calc(var(--stroke-width) * 0.3827) calc(var(--stroke-width) * -0.9239) 0
+    var(--stroke-color),
+    calc(var(--stroke-width) * 0.7071) calc(var(--stroke-width) * -0.7071) 0
+    var(--stroke-color),
+    calc(var(--stroke-width) * 0.9239) calc(var(--stroke-width) * -0.3827) 0
+    var(--stroke-color);
+}
+body {
+    font-family: futura-pt, sans-serif;
+    padding: 24px;
+}
+
+nav {
+    margin-bottom: 16px;
+}
+
+h1 {
+    padding: 0;
+    margin: 0;
+    margin-bottom: -4px;
+    font-size: 32px;
+}
+
+h2 {
+    font-size: 28px;
+    padding: 0;
+    margin: 0 0 8px 0;
+}
+
+h3 {
+    padding: 0;
+    margin: 0 0 8px 0;
+}
+
+h4 {
+    font-size: 18px;
+    padding: 0;
+    margin: 0 0 8px 0;
+}
+
+h5 {
+    padding: 0;
+    margin: 0 0 8px 0;
+}
+
+section {
+    margin-bottom: 16px;
+}
+
+ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
+  grid-template-rows: repeat(auto, 300px);
+  gap: 8px;
+	padding: 0;
+}
+
+li {
+  list-style: none;
+  overflow: hidden;
+  position: relative;
+  border-radius: 5px;
+}
+
+li a {
+	width: 100%;
+	height: 100%;
+	display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+	gap: 4px;
+}
+
+li img {
+  width: 90%;
+  height: 45%;
+  object-fit: contain;
+	filter: 
+		drop-shadow(0 1px 3px rgba(0,0,0,.15))
+		drop-shadow(0 1px 2px rgba(0,0,0,.10));
+}
+
+li .bg {
+	width: 105%;
+  height: 105%;
+  position: absolute;
+  background-position: center;
+  background-size: cover;
+  top: -2.5%;
+  z-index: -2;
+  filter: blur(2px);
+  -webkit-filter: blur(2px);
+	transition: .2s ease;
+}
+
+li .overlay {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	background-image: radial-gradient(rgba(255,255,255,0.0),rgba(0,0,0,1.0));
+	opacity: 0.3;
+	transition: .2s ease;
+}
+
+li:hover .bg {
+  transform: scale(1.05);
+  filter: blur(1px);
+  -webkit-filter: blur(1px);
+}
+
+li:hover .overlay {
+	opacity: 0.0;
+}
+
+li .title {
+	font-weight: 700;
+	color: white;
+	text-decoration: none;
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	
+}
+
+.setSymbol {
+	display: inline-block;
+	background-color: black;
+	width: 32px;
+	overflow: hidden;
+	text-align: center;
+	border-radius: 4px;
+	border: 1px solid white;
+	box-shadow: 0 0 0 2px black;
+	font-size: 12px;
+}
+
+.setSymbol span {
+	font-size: 9px;
+}
+
+a {
+    color: var(--indigo-600);
+    text-decoration: none;
+}
+
+a:visited {
+    color: var(--indigo-900);
+}
+
+@media only screen and (max-width: 672px) {
+    body {
+        padding: 8px;
+    }
+		ul {
+				grid-template-columns: repeat(2, 1fr);
+		}
+}
