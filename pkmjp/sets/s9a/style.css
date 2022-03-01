@@ -8,8 +8,8 @@
     --gray-500: #6b7280;
     --gray-600: #4b5563;
     --gray-700: #374151;
-    --gray-800: #1f2937;
-    --gray-900: #111827;
+    --gray-800: #242C37;
+    --gray-900: #12161E;
   
     --indigo-50: #eef2ff;
     --indigo-100: #e0e7ff;
@@ -60,6 +60,7 @@
   calc(var(--stroke-width) * 0.9239) calc(var(--stroke-width) * -0.3827) 0
     var(--stroke-color);
   }
+
   body {
     font-family: futura-pt, sans-serif;
     padding: 24px;
@@ -329,3 +330,54 @@
   .neutral {
     color: gray;
   }
+
+@media (prefers-color-scheme: dark) {
+	body {
+		background-color: rgba(5,5,5);
+		color: var(--gray-300)
+	}
+	
+	a {
+		color: var(--indigo-50);
+	}
+	
+	a:visited {
+		color: var(--indigo-200);
+	}
+	
+	#summary-table tr:nth-child(2) {
+		border-bottom: 2px solid var(--gray-700);
+	}
+  
+  .second-header {
+		border-bottom: 2px solid var(--gray-700);
+  }
+	
+	.table-content:nth-child(even) {
+    background-color: rgba(255,255,255,0.076);
+  }
+	
+	.table-content:hover > .card-name {
+    border-bottom: 1px solid #34334F;
+  }
+	
+	.column-group {
+    background-color: var(--gray-900);
+  }
+	
+	td {
+    border-bottom: 1px solid var(--gray-700);
+  }
+	
+	.table-content:hover {
+    background-color: #302F40;
+  }
+	
+	 .positive {
+    color: rgb(52,193,40);
+  }
+  
+	.set-translation {
+		color: var(--gray-500);
+	}
+}

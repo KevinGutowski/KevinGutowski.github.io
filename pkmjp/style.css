@@ -211,3 +211,17 @@ a:visited {
 				grid-template-columns: repeat(2, 1fr);
 		}
 }
+
+@media (prefers-color-scheme: dark) {
+	body {
+		background-color: rgba(5,5,5);
+	}
+	
+	a {
+		color: var(--indigo-50);
+	}
+	
+	a:visited {
+		color: var(--indigo-200);
+	}
+}
