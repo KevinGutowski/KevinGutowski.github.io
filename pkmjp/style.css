@@ -105,16 +105,18 @@ section {
 ul {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
-  grid-template-rows: repeat(auto, 300px);
   gap: 8px;
 	padding: 0;
 }
 
 li {
+	height: 100%;
+	width: 100%;
   list-style: none;
   overflow: hidden;
   position: relative;
   border-radius: 5px;
+	transform: translateZ(0)
 }
 
 li a {
@@ -147,6 +149,7 @@ li .bg {
   filter: blur(2px);
   -webkit-filter: blur(2px);
 	transition: .2s ease;
+	transform: translateZ(0);
 }
 
 li .overlay {
@@ -156,6 +159,7 @@ li .overlay {
 	background-image: radial-gradient(rgba(255,255,255,0.0),rgba(0,0,0,1.0));
 	opacity: 0.3;
 	transition: .2s ease;
+	transform: translateZ(0);
 }
 
 li:hover .bg {
@@ -175,6 +179,7 @@ li .title {
 	display: flex;
 	gap: 8px;
 	align-items: center;
+	transform: translateZ(0);
 	
 }
 
