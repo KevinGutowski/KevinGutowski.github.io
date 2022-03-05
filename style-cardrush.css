@@ -1,0 +1,61 @@
+table, caption, tbody, tfoot, thead, tr, th, td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+thead {
+	font-weight: bold;
+	text-transform: capitalize;
+	position: sticky;
+	top: 0;
+	background-color: white;
+}
+
+thead tr th {
+	padding: 12px;
+	text-align: left;
+}
+
+
+tbody tr:nth-child(even) {
+	background-color: rgba(0,0,0,0.05);
+}
+
+tbody tr td {
+	vertical-align: top;
+	padding: 12px;
+}
+
+tbody tr td:first-child {
+	border-radius: 12px 0 0 12px;
+	padding-left: 12px;
+	font-weight: 700;
+}
+
+tbody tr td:last-child {
+	border-radius: 0 12px 12px 0;
+	padding-right: 4px
+}
+
+img {
+	width: 100px;
+	height: auto;
+	padding: 4px;
+}
+
+body {
+	padding: 24px;
+	font-size: 14px;
+}
+
+html {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
