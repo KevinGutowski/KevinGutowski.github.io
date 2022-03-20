@@ -99,9 +99,6 @@ function attachTooltips() {
 		
 		function show() {
 			tooltip.setAttribute('data-show', '');
-			console.log(tooltip.querySelector('img').classList.add('show'))
-			console.log('show')
-
 			// We need to tell Popper to update the tooltip position
 			// after we show the tooltip, otherwise it will be incorrect
 			popperInstance.update();
@@ -124,3 +121,12 @@ function attachTooltips() {
 		});
 	})
 }
+
+// mobile
+function hide() {
+	let visibleTooltip = document.querySelector("[data-show='']")
+	visibleTooltip.removeAttribute('data-show')
+	visibleTooltip.querySelector('img').classList.remove('show')
+}
+
+document.getElementsByTagName('body').addEventListener('touchstart',hide)
