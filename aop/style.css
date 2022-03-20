@@ -1,0 +1,88 @@
+body {
+	font-family: proxima-nova, sans-serif;
+	margin: 0;
+}
+
+table {
+	margin: 24px;
+	border-collapse: collapse;
+}
+
+td {
+	vertical-align: top;
+}
+.cardContainer {
+	display: flex;
+}
+.imgContainer img {
+	width: 53px;
+	height: auto;
+	position: absolute;
+	left: -4px;
+	transition: .5s ease;
+}
+
+.imgContainer {
+	position: relative;
+	width: 45px;
+	height: 28px;
+	background-color: red;
+	display: inline-block;
+	overflow: hidden;
+	border-radius: 4px;
+	transition: .3s ease;
+}
+
+.imgContainer:hover {
+	transform: translateY(-1px);
+}
+
+.tooltipContainer {
+	width: 303px;
+	height: 423px;
+	overflow: hidden;
+	position: relative;
+	background-color: green;
+	display: none;
+	z-index: 2;
+	border-radius: 17px;
+	box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.06), 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+}
+
+.tooltipContainer img {
+	width: 100%;
+	height: auto;
+	position: absolute;
+}
+
+.tooltipContainer[data-show] {
+	display: block;
+}
+
+thead {
+	position: sticky;
+	top: 0px;
+	background-color: white;
+	z-index: 1;
+	font-weight: bold;
+}
+
+thead td {
+	border-bottom: 1px solid rgb(245,245,245);
+}
+
+td {
+	padding: 8px 12px;
+}
+
+.setForArtist {
+	display: grid;
+	justify-items: start;
+	grid-template-columns: repeat(3,max-content);
+	gap: 4px;
+}
+
+tr:nth-child(even) {
+	background-color: rgba(240,240,240);
+}
